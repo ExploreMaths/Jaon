@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.0.13] - 2026-06-20
+## [0.1.0] - 2026-06-20
 
+### Added
+
+- 新增项目官网目录 `docs/`，包含响应式单页网站、特性介绍、安装指南与示例
+- 安装脚本 `installer/install.ps1` 自动识别并安装最新版 VS Code 扩展 `.vsix`
+
+### Changed
+
+- 首个正式版本，版本号从 `0.0.x` 进入 `0.1.0`
 - README 和 Sphinx 文档顶部改用 `jaon-social.png`（带文字标语的社交预览图），不再只放图标
+- Banner 与 Social 图片字体改为优先使用 Inter / Roboto / Segoe UI，避免使用黑体
 
 ## [0.0.12] - 2026-06-20
 

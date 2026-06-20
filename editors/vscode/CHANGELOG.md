@@ -1,8 +1,11 @@
 # Change Log
 
-## [0.0.13]
+## [0.1.0]
 
+- First stable release, version bumped from `0.0.x` to `0.1.0`.
 - Use `jaon-social.png` banner in README and Sphinx docs instead of the square logo icon.
+- Update banner/social fonts to prefer Inter / Roboto / Segoe UI and avoid SimHei.
+- `installer/install.ps1` now auto-detects the latest VS Code extension `.vsix` package.
 
 ## [0.0.12]
 

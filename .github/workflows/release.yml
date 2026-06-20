@@ -69,7 +69,7 @@ jobs:
             dist/Jaon-Setup.exe
             dist/jaon-lang-*.vsix
           generate_release_notes: true
-          prerelease: true
+          prerelease: false
 
   docs:
     runs-on: ubuntu-latest

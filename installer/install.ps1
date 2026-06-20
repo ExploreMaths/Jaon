@@ -125,7 +125,7 @@ Set-ItemProperty -Path $uninstallPath -Name "UninstallString" -Value "powershell
 Set-ItemProperty -Path $uninstallPath -Name "InstallLocation" -Value $InstallDir
 Set-ItemProperty -Path $uninstallPath -Name "DisplayIcon" -Value $iconPath
 Set-ItemProperty -Path $uninstallPath -Name "Publisher" -Value "Jaon Project"
-Set-ItemProperty -Path $uninstallPath -Name "Version" -Value "0.0.13"
+Set-ItemProperty -Path $uninstallPath -Name "Version" -Value "0.1.0"
 
 # Install VS Code extension if VS Code is present and a .vsix package exists
 $vsixDir = Join-Path $rootDir "dist"
