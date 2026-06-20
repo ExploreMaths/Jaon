@@ -17,6 +17,34 @@ if (-not $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Adm
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $rootDir = Split-Path -Parent $scriptDir
+
+# Remove any previous installation first
+$previousInstallDir = "$env:LOCALAPPDATA\Jaon"
+if (Test-Path $previousInstallDir) {
+    Write-Host "Removing previous Jaon installation..." -ForegroundColor Cyan
+    $previousBinDir = Join-Path $previousInstallDir "bin"
+
+    if (Test-Path "HKCU:\Software\Classes\.jaon") {
+        Remove-Item -Path "HKCU:\Software\Classes\.jaon" -Recurse -Force
+    }
+    if (Test-Path "HKCU:\Software\Classes\JaonSourceFile") {
+        Remove-Item -Path "HKCU:\Software\Classes\JaonSourceFile" -Recurse -Force
+    }
+
+    $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if ($userPath -like "*$previousBinDir*") {
+        $newPath = ($userPath -split ';' | Where-Object { $_ -ne $previousBinDir }) -join ';'
+        [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+    }
+
+    if (Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Jaon") {
+        Remove-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Jaon" -Recurse -Force
+    }
+
+    Remove-Item -Path $previousInstallDir -Recurse -Force
+    Write-Host "Previous installation removed." -ForegroundColor Green
+}
+
 $compilerSource = Join-Path $rootDir "dist\compiler.exe"
 $iconSource = Join-Path $scriptDir "jaon-file.ico"
 
@@ -92,10 +120,10 @@ Set-ItemProperty -Path $uninstallPath -Name "UninstallString" -Value "powershell
 Set-ItemProperty -Path $uninstallPath -Name "InstallLocation" -Value $InstallDir
 Set-ItemProperty -Path $uninstallPath -Name "DisplayIcon" -Value $iconPath
 Set-ItemProperty -Path $uninstallPath -Name "Publisher" -Value "Jaon Project"
-Set-ItemProperty -Path $uninstallPath -Name "Version" -Value "0.0.4"
+Set-ItemProperty -Path $uninstallPath -Name "Version" -Value "0.0.5"
 
 # Install VS Code extension if VS Code is present and a .vsix package exists
-$vsixPath = Join-Path $rootDir "dist\jaon-lang-0.0.4.vsix"
+$vsixPath = Join-Path $rootDir "dist\jaon-lang-0.0.5.vsix"
 if (Get-Command code -ErrorAction SilentlyContinue) {
     if (Test-Path $vsixPath) {
         Write-Host "Installing VS Code extension..." -ForegroundColor Cyan

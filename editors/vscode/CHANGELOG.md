@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.5]
+
+- Installers now remove any previous Jaon version before installing.
+
 ## [0.0.4]
 
 - Fix Inno Setup PATH cleanup function compatibility.

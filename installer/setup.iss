@@ -2,7 +2,7 @@
 ; Build with: iscc installer/setup.iss
 
 #define MyAppName "Jaon"
-#define MyAppVersion "0.0.4"
+#define MyAppVersion "0.0.5"
 #define MyAppPublisher "Jaon Project"
 #define MyAppURL "https://github.com/ExploreMaths/Jaon"
 
@@ -69,6 +69,19 @@ Filename: "cmd.exe"; Parameters: "/c code --install-extension ""{app}\\jaon-lang
 Filename: "cmd.exe"; Parameters: "/c code --uninstall-extension exploremaths.jaon-lang"; RunOnceId: "UninstallJaonVSCodeExt"
 
 [Code]
+function InitializeSetup(): Boolean;
+var
+  UninstallString: string;
+  ResultCode: Integer;
+begin
+  Result := true;
+  // Silently uninstall any previous Jaon version before installing this one.
+  if RegQueryStringValue(HKLM, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\JAON-LANG-0F3A-4B8C-9D2E-1A7B5C4D8E2F_is1', 'UninstallString', UninstallString) then
+  begin
+    Exec(RemoveQuotes(UninstallString), '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  end;
+end;
+
 function RemoveFromPath(const Dir: string; var Path: string): Boolean;
 var
   P: Integer;
