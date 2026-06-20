@@ -40,7 +40,13 @@ function runJaonFile() {
         terminal = vscode.window.createTerminal(JAON_TERMINAL_NAME);
     }
 
-    const command = `${quotePath(executable)} run ${quotePath(filePath)}`;
+    const fileArg = quotePath(filePath);
+    const exeArg = executable.includes(' ')
+        ? process.platform === 'win32'
+            ? `& ${quotePath(executable)}`
+            : quotePath(executable)
+        : executable;
+    const command = `${exeArg} run ${fileArg}`;
     terminal.show();
     terminal.sendText(command);
 }

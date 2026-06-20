@@ -282,8 +282,8 @@ flake8 jaon tests scripts --max-line-length=120 --extend-ignore=E203,W503
 推送标签即可触发 GitHub Actions 自动构建 Windows 可执行文件并发布 Release：
 
 ```bash
-git tag v0.0.1
-git push origin v0.0.1
+git tag v0.0.2
+git push origin v0.0.2
 ```
 
 ## 许可证

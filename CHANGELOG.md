@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nuitka 构建独立 `compiler.exe`
 - GitHub Actions CI/CD 工作流
 
+## [0.0.2] - 2026-06-20
+
+- 修复 VS Code 扩展运行按钮在 PowerShell 终端下的命令引号问题
+
 ## [0.0.1] - 2026-06-20
 
 - 项目初始发布（pre-release）
