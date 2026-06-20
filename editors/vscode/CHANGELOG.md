@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.4]
+
+- Fix Inno Setup PATH cleanup function compatibility.
+
 ## [0.0.3]
 
 - Inno Setup installer now adds Jaon to the user PATH and removes it on uninstall.

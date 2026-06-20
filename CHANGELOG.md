@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nuitka 构建独立 `compiler.exe`
 - GitHub Actions CI/CD 工作流
 
+## [0.0.4] - 2026-06-20
+
+- 修复 Inno Setup 脚本中 PATH 清理函数的兼容性问题
+
 ## [0.0.3] - 2026-06-20
 
 - Inno Setup 安装包安装时自动添加 Jaon 到用户 PATH

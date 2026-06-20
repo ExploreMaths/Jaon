@@ -2,7 +2,7 @@
 ; Build with: iscc installer/setup.iss
 
 #define MyAppName "Jaon"
-#define MyAppVersion "0.0.3"
+#define MyAppVersion "0.0.4"
 #define MyAppPublisher "Jaon Project"
 #define MyAppURL "https://github.com/ExploreMaths/Jaon"
 
@@ -79,12 +79,10 @@ begin
 
   Delete(Path, P, Length(Dir));
 
-  // Clean up duplicated or leading/trailing semicolons
-  while Pos(';;', Path) > 0 do
-    Path := StringReplace(Path, ';;', ';');
-  if (Length(Path) > 0) and (Path[1] = ';') then
+  // Clean up leading/trailing semicolons. Empty entries in PATH are harmless.
+  while (Length(Path) > 0) and (Path[1] = ';') do
     Delete(Path, 1, 1);
-  if (Length(Path) > 0) and (Path[Length(Path)] = ';') then
+  while (Length(Path) > 0) and (Path[Length(Path)] = ';') do
     Delete(Path, Length(Path), 1);
 
   Result := True;

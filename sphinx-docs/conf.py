@@ -13,8 +13,8 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'Jaon'
 copyright = '2026, Jaon Project'
 author = 'Jaon Project'
-release = '0.0.3'
-version = '0.0.3'
+release = '0.0.4'
+version = '0.0.4'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
