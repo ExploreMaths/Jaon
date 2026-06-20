@@ -5,7 +5,7 @@
 ## 开发环境
 
 ```bash
-git clone https://github.com/yourusername/helios.git
+git clone https://github.com/ExploreMaths/Helios.git
 cd helios
 pip install -e .[dev,docs]
 ```

@@ -5,8 +5,8 @@
 <h1 align="center">Helios 编程语言</h1>
 
 <p align="center">
-  <a href="https://github.com/yourusername/helios/actions/workflows/ci.yml">
-    <img src="https://github.com/yourusername/helios/actions/workflows/ci.yml/badge.svg" alt="CI">
+  <a href="https://github.com/ExploreMaths/Helios/actions/workflows/ci.yml">
+    <img src="https://github.com/ExploreMaths/Helios/actions/workflows/ci.yml/badge.svg" alt="CI">
   </a>
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
@@ -31,7 +31,7 @@ Helios 是一门融合了 **Python 的简洁** 与 **Java 的严谨** 的实验�
 ### 从源码安装
 
 ```bash
-git clone https://github.com/yourusername/helios.git
+git clone https://github.com/ExploreMaths/Helios.git
 cd helios
 pip install -e .
 ```

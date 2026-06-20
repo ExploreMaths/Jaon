@@ -39,10 +39,10 @@ docs = [
 helios = "helios.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/helios"
+Homepage = "https://github.com/ExploreMaths/Helios"
 Documentation = "https://helios.readthedocs.io"
-Repository = "https://github.com/yourusername/helios"
-Issues = "https://github.com/yourusername/helios/issues"
+Repository = "https://github.com/ExploreMaths/Helios"
+Issues = "https://github.com/ExploreMaths/Helios/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

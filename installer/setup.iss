@@ -4,7 +4,7 @@
 #define MyAppName "Helios"
 #define MyAppVersion "0.1.0"
 #define MyAppPublisher "Helios Project"
-#define MyAppURL "https://github.com/yourusername/helios"
+#define MyAppURL "https://github.com/ExploreMaths/Helios"
 
 [Setup]
 AppId={{HELIOS-LANG-0F3A-4B8C-9D2E-1A7B5C4D8E2F}
