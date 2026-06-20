@@ -27,6 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nuitka 构建独立 `compiler.exe`
 - GitHub Actions CI/CD 工作流
 
+## [0.0.6] - 2026-06-20
+
+- Inno Setup 安装后广播环境变量变更通知，新终端无需重启即可识别 jaon
+- PowerShell 安装脚本安装后立即刷新当前进程 PATH
+- VS Code 扩展运行时若 PATH 中找不到 jaon，自动回退到默认安装路径
+
 ## [0.0.5] - 2026-06-20
 
 - Inno Setup 和 PowerShell 安装前自动卸载/删除旧版本

@@ -2,7 +2,7 @@
 ; Build with: iscc installer/setup.iss
 
 #define MyAppName "Jaon"
-#define MyAppVersion "0.0.5"
+#define MyAppVersion "0.0.6"
 #define MyAppPublisher "Jaon Project"
 #define MyAppURL "https://github.com/ExploreMaths/Jaon"
 
@@ -82,6 +82,21 @@ begin
   end;
 end;
 
+function SendMessageTimeout(hWnd: LongWord; Msg: LongWord; wParam: LongInt; lParam: PAnsiChar; fuFlags: LongWord; uTimeout: LongWord; var lpdwResult: LongWord): LongInt;
+external 'SendMessageTimeoutA@user32.dll stdcall';
+
+const
+  HWND_BROADCAST = $FFFF;
+  WM_SETTINGCHANGE = $001A;
+  SMTO_ABORTIFHUNG = 2;
+
+procedure RefreshEnvironment;
+var
+  Result: LongWord;
+begin
+  SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 'Environment', SMTO_ABORTIFHUNG, 5000, Result);
+end;
+
 function RemoveFromPath(const Dir: string; var Path: string): Boolean;
 var
   P: Integer;
@@ -125,6 +140,9 @@ begin
     begin
       RegWriteStringValue(HKCU, 'Environment', 'Path', BinDir);
     end;
+
+    // Notify running applications that environment variables changed.
+    RefreshEnvironment;
   end;
 end;
 

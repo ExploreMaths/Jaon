@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 
 const JAON_TERMINAL_NAME = 'Jaon';
 
@@ -32,7 +33,7 @@ function runJaonFile() {
     }
 
     const config = vscode.workspace.getConfiguration('jaon');
-    const executable = config.get<string>('executablePath', 'jaon');
+    const executable = resolveExecutable(config.get<string>('executablePath', 'jaon'));
 
     // Prefer a terminal already named "Jaon"; otherwise create one.
     let terminal = vscode.window.terminals.find(t => t.name === JAON_TERMINAL_NAME);
@@ -49,6 +50,27 @@ function runJaonFile() {
     const command = `${exeArg} run ${fileArg}`;
     terminal.show();
     terminal.sendText(command);
+}
+
+/**
+ * Resolve the configured executable. If it is the default 'jaon' command and
+ * cannot be found on PATH, fall back to common Windows installation locations.
+ */
+function resolveExecutable(configured: string): string {
+    if (configured !== 'jaon' || process.platform !== 'win32') {
+        return configured;
+    }
+    const candidates = [
+        path.join(process.env.LOCALAPPDATA || '', 'Jaon', 'bin', 'compiler.exe'),
+        path.join(process.env.ProgramFiles || '', 'Jaon', 'bin', 'compiler.exe'),
+        path.join(process.env['ProgramFiles(x86)'] || '', 'Jaon', 'bin', 'compiler.exe'),
+    ];
+    for (const candidate of candidates) {
+        if (fs.existsSync(candidate)) {
+            return candidate;
+        }
+    }
+    return configured;
 }
 
 /**

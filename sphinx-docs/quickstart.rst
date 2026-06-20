@@ -29,7 +29,7 @@ Jaon 提供两种命令行入口： ``python -m jaon`` 或直接 ``jaon``。
 
 示例会话::
 
-    Jaon 0.0.5 REPL
+    Jaon 0.0.6 REPL
     Type 'exit' or press Ctrl+C to quit.
 
     >>> var x = 10;

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.6]
+
+- Broadcast environment variable changes after Inno Setup installation.
+- Refresh current process PATH immediately after PowerShell installation.
+- VS Code extension falls back to default install paths when 'jaon' is not on PATH.
+
 ## [0.0.5]
 
 - Installers now remove any previous Jaon version before installing.
