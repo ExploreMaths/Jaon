@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.12]
+
+- Redesign logo: keep Java's three S-shaped lines, color them in Python blue/yellow, remove outer circle, enlarge to near canvas edge.
+- Switch VS Code file icon from SVG to PNG generated from logo.
+
 ## [0.0.11]
 
 - Redesign logo: keep Java's three S-shaped lines, color them in Python blue/yellow, remove outer circle.

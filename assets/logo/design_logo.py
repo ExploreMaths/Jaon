@@ -103,8 +103,8 @@ def create_logo(size: int) -> Image.Image:
 
     cx = cy = big // 2
 
-    # Three S-lines mark, large and centered
-    draw_jaon_mark(draw, (cx, cy), int(big * 0.42))
+    # Three S-lines mark, as large as possible while staying inside the canvas.
+    draw_jaon_mark(draw, (cx, cy), int(big * 0.95))
 
     # Downscale
     if size != big:
