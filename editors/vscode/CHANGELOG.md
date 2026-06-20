@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.8]
+
+- Fix Inno Setup `Duplicate identifier 'Result'` compile error.
+
 ## [0.0.7]
 
 - Fix duplicate HWND_BROADCAST constant in Inno Setup script.

@@ -2,7 +2,7 @@
 ; Build with: iscc installer/setup.iss
 
 #define MyAppName "Jaon"
-#define MyAppVersion "0.0.7"
+#define MyAppVersion "0.0.8"
 #define MyAppPublisher "Jaon Project"
 #define MyAppURL "https://github.com/ExploreMaths/Jaon"
 
@@ -45,7 +45,7 @@ Source: "jaon-file.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\examples\*"; DestDir: "{app}\examples"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\editors\vscode\jaon-lang-*.vsix"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\editors\vscode\jaon-lang-{#MyAppVersion}.vsix"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\bin\compiler.exe"; Parameters: "repl"; IconFilename: "{app}\jaon-file.ico"
@@ -91,9 +91,9 @@ const
 
 procedure RefreshEnvironment;
 var
-  Result: LongWord;
+  TimeoutResult: LongWord;
 begin
-  SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 'Environment', SMTO_ABORTIFHUNG, 5000, Result);
+  SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 'Environment', SMTO_ABORTIFHUNG, 5000, TimeoutResult);
 end;
 
 function RemoveFromPath(const Dir: string; var Path: string): Boolean;
