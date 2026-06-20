@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.7]
+
+- Fix duplicate HWND_BROADCAST constant in Inno Setup script.
+
 ## [0.0.6]
 
 - Broadcast environment variable changes after Inno Setup installation.

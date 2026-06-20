@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nuitka 构建独立 `compiler.exe`
 - GitHub Actions CI/CD 工作流
 
+## [0.0.7] - 2026-06-20
+
+- 修复 Inno Setup 脚本中 HWND_BROADCAST 常量重复定义问题
+
 ## [0.0.6] - 2026-06-20
 
 - Inno Setup 安装后广播环境变量变更通知，新终端无需重启即可识别 jaon

@@ -2,7 +2,7 @@
 ; Build with: iscc installer/setup.iss
 
 #define MyAppName "Jaon"
-#define MyAppVersion "0.0.6"
+#define MyAppVersion "0.0.7"
 #define MyAppPublisher "Jaon Project"
 #define MyAppURL "https://github.com/ExploreMaths/Jaon"
 
@@ -86,7 +86,6 @@ function SendMessageTimeout(hWnd: LongWord; Msg: LongWord; wParam: LongInt; lPar
 external 'SendMessageTimeoutA@user32.dll stdcall';
 
 const
-  HWND_BROADCAST = $FFFF;
   WM_SETTINGCHANGE = $001A;
   SMTO_ABORTIFHUNG = 2;
 
