@@ -125,6 +125,8 @@ cython_debug/
 
 # VS Code
 .vscode/
+editors/vscode/node_modules/
+editors/vscode/out/
 
 # macOS
 .DS_Store

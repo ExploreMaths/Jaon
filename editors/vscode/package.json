@@ -1,0 +1,91 @@
+{
+  "name": "helios-lang",
+  "displayName": "Helios Language Support",
+  "description": "Syntax highlighting and run button for the Helios programming language.",
+  "version": "0.1.0",
+  "publisher": "exploremaths",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Debuggers"
+  ],
+  "keywords": [
+    "helios",
+    "language",
+    "programming language"
+  ],
+  "activationEvents": [
+    "onLanguage:helios"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "helios",
+        "aliases": [
+          "Helios"
+        ],
+        "extensions": [
+          ".helios"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/file-icon.svg",
+          "dark": "./images/file-icon.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "helios",
+        "scopeName": "source.helios",
+        "path": "./syntaxes/helios.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "helios.run",
+        "title": "Run Helios File",
+        "icon": "$(play)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceExtname == .helios",
+          "command": "helios.run",
+          "group": "navigation@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "helios.run",
+          "when": "editorLangId == helios"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Helios",
+      "properties": {
+        "helios.executablePath": {
+          "type": "string",
+          "default": "helios",
+          "description": "Path to the Helios executable. Use 'helios' if it is on PATH, or an absolute path to compiler.exe."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "20.x",
+    "typescript": "^5.4.0"
+  }
+}
