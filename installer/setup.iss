@@ -2,7 +2,7 @@
 ; Build with: iscc installer/setup.iss
 
 #define MyAppName "Jaon"
-#define MyAppVersion "0.0.2"
+#define MyAppVersion "0.0.3"
 #define MyAppPublisher "Jaon Project"
 #define MyAppURL "https://github.com/ExploreMaths/Jaon"
 
@@ -69,13 +69,66 @@ Filename: "cmd.exe"; Parameters: "/c code --install-extension ""{app}\\jaon-lang
 Filename: "cmd.exe"; Parameters: "/c code --uninstall-extension exploremaths.jaon-lang"; RunOnceId: "UninstallJaonVSCodeExt"
 
 [Code]
+function RemoveFromPath(const Dir: string; var Path: string): Boolean;
+var
+  P: Integer;
+begin
+  Result := False;
+  P := Pos(Dir, Path);
+  if P = 0 then exit;
+
+  Delete(Path, P, Length(Dir));
+
+  // Clean up duplicated or leading/trailing semicolons
+  while Pos(';;', Path) > 0 do
+    Path := StringReplace(Path, ';;', ';');
+  if (Length(Path) > 0) and (Path[1] = ';') then
+    Delete(Path, 1, 1);
+  if (Length(Path) > 0) and (Path[Length(Path)] = ';') then
+    Delete(Path, Length(Path), 1);
+
+  Result := True;
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 var
   ResultCode: Integer;
+  Path, BinDir: string;
 begin
   if CurStep = ssPostInstall then
   begin
     // Refresh icon cache
     Exec('ie4uinit.exe', '-show', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+
+    // Add Jaon bin directory to the user PATH
+    BinDir := ExpandConstant('{app}\bin');
+    if RegQueryStringValue(HKCU, 'Environment', 'Path', Path) then
+    begin
+      if Pos(BinDir, Path) = 0 then
+      begin
+        if Path <> '' then Path := Path + ';';
+        Path := Path + BinDir;
+        RegWriteStringValue(HKCU, 'Environment', 'Path', Path);
+      end;
+    end else
+    begin
+      RegWriteStringValue(HKCU, 'Environment', 'Path', BinDir);
+    end;
+  end;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  Path, BinDir: string;
+begin
+  if CurUninstallStep = usUninstall then
+  begin
+    // Remove Jaon bin directory from the user PATH
+    BinDir := ExpandConstant('{app}\bin');
+    if RegQueryStringValue(HKCU, 'Environment', 'Path', Path) then
+    begin
+      if RemoveFromPath(BinDir, Path) then
+        RegWriteStringValue(HKCU, 'Environment', 'Path', Path);
+    end;
   end;
 end;

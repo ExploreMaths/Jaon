@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nuitka 构建独立 `compiler.exe`
 - GitHub Actions CI/CD 工作流
 
+## [0.0.3] - 2026-06-20
+
+- Inno Setup 安装包安装时自动添加 Jaon 到用户 PATH
+- 卸载时自动从用户 PATH 移除 Jaon
+
 ## [0.0.2] - 2026-06-20
 
 - 修复 VS Code 扩展运行按钮在 PowerShell 终端下的命令引号问题

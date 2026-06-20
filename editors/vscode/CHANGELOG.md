@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.3]
+
+- Inno Setup installer now adds Jaon to the user PATH and removes it on uninstall.
+
 ## [0.0.2]
 
 - Fix command quoting for PowerShell terminals.
