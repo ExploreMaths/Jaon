@@ -1,0 +1,19 @@
+// Exception handling
+fun divide(a: Int, b: Int): Int {
+    if (b == 0) {
+        throw "Division by zero";
+    }
+    return a / b;
+}
+
+fun safe_divide(a: Int, b: Int): Int {
+    try {
+        return divide(a, b);
+    } catch (e) {
+        println("Error: " + e);
+        return 0;
+    }
+}
+
+println(safe_divide(10, 2));
+println(safe_divide(10, 0));

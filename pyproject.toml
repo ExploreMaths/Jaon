@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "helios-lang"
+version = "0.1.0"
+description = "Helios - a programming language blending Python simplicity with Java rigor"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Helios Project", email = "helios@example.com"}
+]
+keywords = ["programming-language", "compiler", "interpreter", "python", "java"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Software Development :: Interpreters",
+]
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = [
+    "nuitka>=4.0",
+]
+docs = [
+    "sphinx>=7.0",
+    "furo>=2024.0",
+]
+
+[project.scripts]
+helios = "helios.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/helios"
+Documentation = "https://helios.readthedocs.io"
+Repository = "https://github.com/yourusername/helios"
+Issues = "https://github.com/yourusername/helios/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["helios*"]
+exclude = ["tests*", "sphinx-docs*", "scripts*", "examples*"]
+
+[tool.setuptools.package-data]
+helios = ["py.typed"]

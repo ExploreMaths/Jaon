@@ -1,0 +1,49 @@
+// Advanced Helios features
+
+// Higher-order function
+fun apply(f: Any, x: Int): Int {
+    return f(x);
+}
+
+fun double(x: Int): Int {
+    return x * 2;
+}
+
+println(apply(double, 7));
+
+// Lambda (anonymous function)
+var triple = fun(x: Int): Int { return x * 3; };
+println(triple(4));
+
+// String operations
+var s = "Hello";
+println(s.length());
+println(s.upper());
+
+// List operations
+var xs = [1, 2, 3];
+xs.append(4);
+println(xs);
+println(xs.contains(2));
+
+// Dictionary
+var map = {"a": 1, "b": 2};
+map["c"] = 3;
+println(map["b"]);
+println(len(map));
+
+// Truthiness
+if ("") {
+    println("empty string true");
+} else {
+    println("empty string false");
+}
+
+if ([1, 2]) {
+    println("non-empty list true");
+}
+
+// Type checking
+println(type(42));
+println(type("hi"));
+println(type([1, 2]));

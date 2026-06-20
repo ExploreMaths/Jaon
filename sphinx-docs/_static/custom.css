@@ -1,0 +1,27 @@
+/* Custom styles for Helios documentation */
+
+/* Body font: 华文中宋 with fallbacks */
+body {
+    font-family: "STZhongsong", "华文宋体", "SimSun", "宋体", "Noto Serif CJK SC", serif;
+}
+
+/* Code font with Chinese support */
+code, pre, tt, .sig, .sig-name, .sig-param {
+    font-family: "SF Mono", "Fira Code", "Source Code Pro", "Consolas", "Microsoft YaHei Mono", "Noto Sans Mono CJK SC", monospace;
+}
+
+/* Headings: 华文中宋 */
+h1, h2, h3, h4, h5, h6 {
+    font-family: "STZhongsong", "华文宋体", "SimSun", "宋体", "Noto Serif CJK SC", serif;
+    font-weight: 600;
+}
+
+/* Improve line height for Chinese text */
+p, li {
+    line-height: 1.8;
+}
+
+/* Sidebar brand title */
+.sidebar-brand-text {
+    font-weight: 600;
+}

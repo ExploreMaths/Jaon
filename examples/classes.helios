@@ -1,0 +1,50 @@
+// Object-oriented programming in Helios
+class Animal {
+    public var name: String = "";
+
+    constructor(n: String) {
+        this.name = n;
+    }
+
+    public fun speak(): String {
+        return "Some sound";
+    }
+}
+
+class Dog extends Animal {
+    constructor(n: String) {
+        this.name = n;
+    }
+
+    public fun speak(): String {
+        return "Woof!";
+    }
+
+    public fun info(): String {
+        return this.name + " says " + this.speak();
+    }
+}
+
+var dog = new Dog("Buddy");
+println(dog.name);
+println(dog.speak());
+println(dog.info());
+
+class Counter {
+    private var value: Int = 0;
+
+    public fun increment(): Int {
+        this.value = this.value + 1;
+        return this.value;
+    }
+
+    public fun get(): Int {
+        return this.value;
+    }
+}
+
+var c = new Counter();
+println(c.increment());
+println(c.increment());
+println(c.increment());
+println(c.get());

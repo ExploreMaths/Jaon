@@ -1,0 +1,26 @@
+// Functions, conditionals and loops
+fun factorial(n: Int): Int {
+    if (n <= 1) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
+
+fun is_even(n: Int): Bool {
+    return n % 2 == 0;
+}
+
+println(factorial(5));
+println(is_even(10));
+println(is_even(7));
+
+var i = 0;
+while (i < 5) {
+    println(i);
+    i = i + 1;
+}
+
+for (x in [10, 20, 30]) {
+    println(x);
+}
