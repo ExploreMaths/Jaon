@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.10]
+
+- Add syntax highlighting for general variable identifiers (`variable.other.readwrite.jaon`).
+
 ## [0.0.9]
 
 - Installer now ships a `jaon.cmd` shim in `bin`, so `jaon run <file.jaon>` works after installation.

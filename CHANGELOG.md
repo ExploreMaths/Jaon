@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.10] - 2026-06-20
+
+- VS Code 扩展语法高亮为普通变量标识符添加颜色（`variable.other.readwrite.jaon`）
+
 ## [0.0.9] - 2026-06-20
 
 - 安装包在 `bin` 目录中新增 `jaon.cmd` 命令包装器，安装后可直接使用 `jaon run <file.jaon>`
