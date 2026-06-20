@@ -2,7 +2,7 @@
 ; Build with: iscc installer/setup.iss
 
 #define MyAppName "Jaon"
-#define MyAppVersion "0.0.8"
+#define MyAppVersion "0.0.9"
 #define MyAppPublisher "Jaon Project"
 #define MyAppURL "https://github.com/ExploreMaths/Jaon"
 
@@ -41,6 +41,7 @@ Name: "installvscodeext"; Description: "Install VS Code extension for .jaon file
 
 [Files]
 Source: "..\dist\compiler.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "jaon.cmd"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "jaon-file.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion

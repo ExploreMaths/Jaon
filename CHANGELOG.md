@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.9] - 2026-06-20
+
+- 安装包在 `bin` 目录中新增 `jaon.cmd` 命令包装器，安装后可直接使用 `jaon run <file.jaon>`
+
 ## [0.0.8] - 2026-06-20
 
 - 修复 Inno Setup 脚本中 `Duplicate identifier 'Result'` 编译错误

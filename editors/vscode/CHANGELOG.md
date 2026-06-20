@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.9]
+
+- Installer now ships a `jaon.cmd` shim in `bin`, so `jaon run <file.jaon>` works after installation.
+
 ## [0.0.8]
 
 - Fix Inno Setup `Duplicate identifier 'Result'` compile error.
