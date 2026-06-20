@@ -113,15 +113,41 @@ def create_logo(size: int) -> Image.Image:
     return img
 
 
-def _load_fonts(height: int):
-    """Load banner/social fonts, falling back to default."""
-    candidates_large = ["arialbd.ttf", "Arial Bold.ttf", "DejaVuSans-Bold.ttf"]
-    candidates_small = ["arial.ttf", "Arial.ttf", "DejaVuSans.ttf"]
+def _load_fonts(large_size: int, small_size: int):
+    """Load banner/social fonts, falling back to default.
+
+    Prefer modern sans-serif fonts and avoid CJK bitmap fallbacks like SimHei.
+    """
+    candidates_large = [
+        "Inter-Bold.ttf",
+        "Inter Bold.ttf",
+        "Roboto-Bold.ttf",
+        "Roboto Bold.ttf",
+        "Segoe UI Bold.ttf",
+        "Helvetica-Bold.ttf",
+        "Helvetica Bold.ttf",
+        "Arial Bold.ttf",
+        "arialbd.ttf",
+        "DejaVuSans-Bold.ttf",
+    ]
+    candidates_small = [
+        "Inter-Regular.ttf",
+        "Inter Regular.ttf",
+        "Inter.ttf",
+        "Roboto-Regular.ttf",
+        "Roboto Regular.ttf",
+        "Roboto.ttf",
+        "Segoe UI.ttf",
+        "Helvetica.ttf",
+        "Arial.ttf",
+        "arial.ttf",
+        "DejaVuSans.ttf",
+    ]
 
     font_large = None
     for name in candidates_large:
         try:
-            font_large = ImageFont.truetype(name, int(height * 0.34))
+            font_large = ImageFont.truetype(name, large_size)
             break
         except OSError:
             continue
@@ -129,7 +155,7 @@ def _load_fonts(height: int):
     font_small = None
     for name in candidates_small:
         try:
-            font_small = ImageFont.truetype(name, int(height * 0.12))
+            font_small = ImageFont.truetype(name, small_size)
             break
         except OSError:
             continue
@@ -150,7 +176,7 @@ def create_banner(width: int, height: int) -> Image.Image:
     logo = create_logo(logo_size)
     img.paste(logo, (int(height * 0.14), int((height - logo_size) / 2)), logo)
 
-    font_large, font_small = _load_fonts(height)
+    font_large, font_small = _load_fonts(int(height * 0.34), int(height * 0.12))
 
     text_x = int(height * 0.14) + logo_size + int(height * 0.12)
     bbox = draw.textbbox((0, 0), "Jaon", font=font_large)
@@ -186,12 +212,7 @@ def create_social(width: int, height: int) -> Image.Image:
     logo = create_logo(logo_size)
     img.paste(logo, ((width - logo_size) // 2, int(height * 0.14)), logo)
 
-    try:
-        font_large = ImageFont.truetype("arialbd.ttf", int(height * 0.17))
-        font_small = ImageFont.truetype("arial.ttf", int(height * 0.06))
-    except OSError:
-        font_large = ImageFont.load_default()
-        font_small = ImageFont.load_default()
+    font_large, font_small = _load_fonts(int(height * 0.17), int(height * 0.06))
 
     bbox = draw.textbbox((0, 0), "Jaon", font=font_large)
     text_width = bbox[2] - bbox[0]

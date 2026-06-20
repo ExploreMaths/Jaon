@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaon - 融合 Python 简洁与 Java 严谨的编程语言</title>
+    <meta name="description" content="Jaon 是一门实验性编程语言，融合 Python 的简洁语法与 Java 的静态类型严谨性。">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="logo">
+                <img src="assets/jaon-logo-256x256.png" alt="Jaon Logo" width="36" height="36">
+                <span>Jaon</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">特性</a></li>
+                <li><a href="#examples">示例</a></li>
+                <li><a href="#install">安装</a></li>
+                <li><a href="#docs">文档</a></li>
+                <li><a href="https://github.com/ExploreMaths/Jaon" target="_blank" rel="noopener">GitHub</a></li>
+            </ul>
+            <button class="menu-toggle" aria-label="打开菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <img src="assets/jaon-social.png" alt="Jaon" class="hero-logo">
+                    <h1>一门融合 Python 简洁与 Java 严谨的编程语言</h1>
+                    <p class="hero-description">
+                        Jaon 从零实现了完整的编译器工具链：词法分析、语法分析、语义分析、
+                        Bytecode 编译器以及栈式虚拟机。使用自定义后缀 <code>.jaon</code>。
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#install" class="btn btn-primary">开始使用</a>
+                        <a href="https://github.com/ExploreMaths/Jaon" target="_blank" rel="noopener" class="btn btn-secondary">GitHub</a>
+                    </div>
+                    <div class="hero-terminal">
+                        <div class="terminal-header">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
+                            <span class="terminal-title">bash</span>
+                        </div>
+                        <div class="terminal-body">
+                            <code><span class="prompt">$</span> python -m jaon run examples/hello.jaon</code>
+                            <code class="output">Hello, Jaon!</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="container">
+                <h2 class="section-title">核心特性</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📝</div>
+                        <h3>静态类型 + 类型推断</h3>
+                        <p>参数与返回值需显式声明，局部变量可省略类型，兼顾安全与简洁。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏗️</div>
+                        <h3>类与继承</h3>
+                        <p>支持构造器、字段、方法、访问控制（public / private）以及静态方法。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>简洁语法</h3>
+                        <p>Python 风格的关键字配合 Java 风格的 <code>{}</code> 块结构，易于上手。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📦</div>
+                        <h3>内建集合</h3>
+                        <p>List、Dict、String 及常用方法，满足日常开发需求。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>异常处理</h3>
+                        <p>完整的 try / catch / finally / throw 异常机制。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <h3>自定义编译器</h3>
+                        <p>完整的前端与后端实现，可生成 Bytecode 并由栈式虚拟机执行。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="examples" id="examples">
+            <div class="container">
+                <h2 class="section-title">代码示例</h2>
+                <div class="example-tabs">
+                    <button class="tab-btn active" data-tab="hello">Hello World</button>
+                    <button class="tab-btn" data-tab="class">类与继承</button>
+                    <button class="tab-btn" data-tab="control">控制流</button>
+                    <button class="tab-btn" data-tab="exception">异常处理</button>
+                </div>
+                <div class="tab-contents">
+                    <div class="tab-content active" id="hello">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>hello.jaon</span>
+                            </div>
+                            <pre><code>// Jaon: Hello World
+println("Hello, Jaon!");</code></pre>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="class">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>classes.jaon</span>
+                            </div>
+                            <pre><code>class Animal {
+    public var name: String = "";
+
+    constructor(n: String) {
+        this.name = n;
+    }
+
+    public fun speak(): String {
+        return "Some sound";
+    }
+}
+
+class Dog extends Animal {
+    constructor(n: String) {
+        this.name = n;
+    }
+
+    public fun speak(): String {
+        return "Woof!";
+    }
+}
+
+var dog = new Dog("Buddy");
+println(dog.name);
+println(dog.speak());</code></pre>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="control">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>control_flow.jaon</span>
+                            </div>
+                            <pre><code>var x = 10;
+
+if (x > 0) {
+    println("positive");
+} elif (x < 0) {
+    println("negative");
+} else {
+    println("zero");
+}
+
+var i = 0;
+while (i < 3) {
+    println(i);
+    i = i + 1;
+}
+
+for (n in [1, 2, 3]) {
+    println(n);
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="exception">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>exceptions.jaon</span>
+                            </div>
+                            <pre><code>fun divide(a: Int, b: Int): Int {
+    if (b == 0) {
+        throw "Division by zero";
+    }
+    return a / b;
+}
+
+try {
+    divide(10, 0);
+} catch (e) {
+    println("Error: " + e);
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="install" id="install">
+            <div class="container">
+                <h2 class="section-title">快速安装</h2>
+                <div class="install-grid">
+                    <div class="install-card">
+                        <h3>从源码安装</h3>
+                        <div class="code-block minimal">
+                            <pre><code>git clone https://github.com/ExploreMaths/Jaon.git
+cd Jaon
+pip install -e .</code></pre>
+                        </div>
+                    </div>
+                    <div class="install-card">
+                        <h3>Windows 安装程序</h3>
+                        <p>下载 <code>Jaon-Setup.exe</code> 并运行，安装后双击 <code>.jaon</code> 文件即可执行。</p>
+                        <a href="https://github.com/ExploreMaths/Jaon/releases/latest/download/Jaon-Setup.exe" class="btn btn-secondary">下载最新版</a>
+                    </div>
+                </div>
+                <div class="install-actions">
+                    <h3>运行你的第一个 Jaon 程序</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>bash</span>
+                        </div>
+                        <pre><code>python -m jaon run examples/hello.jaon
+python -m jaon repl
+python -m jaon dis examples/hello.jaon</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="docs" id="docs">
+            <div class="container">
+                <h2 class="section-title">文档与资源</h2>
+                <div class="docs-grid">
+                    <a href="https://jaon.readthedocs.io/zh_CN/latest/" target="_blank" rel="noopener" class="doc-card">
+                        <h3>📚 完整文档</h3>
+                        <p>在 Read the Docs 上阅读语言指南、编译器架构和 API 文档。</p>
+                    </a>
+                    <a href="https://github.com/ExploreMaths/Jaon/tree/main/examples" target="_blank" rel="noopener" class="doc-card">
+                        <h3>💡 示例程序</h3>
+                        <p>查看 hello、classes、control_flow、exceptions、sorting 等示例。</p>
+                    </a>
+                    <a href="https://github.com/ExploreMaths/Jaon/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener" class="doc-card">
+                        <h3>🤝 参与贡献</h3>
+                        <p>了解如何提交 Issue、Pull Request 以及项目开发规范。</p>
+                    </a>
+                    <a href="https://marketplace.visualstudio.com/items?itemName=exploremaths.jaon-lang" target="_blank" rel="noopener" class="doc-card">
+                        <h3>🖥️ VS Code 扩展</h3>
+                        <p>语法高亮与一键运行按钮，提升 Jaon 开发体验。</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="assets/jaon-logo-256x256.png" alt="Jaon" width="28" height="28">
+                    <span>Jaon</span>
+                </div>
+                <p class="footer-text">MIT License · 2026 Jaon Project</p>
+                <div class="footer-links">
+                    <a href="https://github.com/ExploreMaths/Jaon" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://jaon.readthedocs.io/zh_CN/latest/" target="_blank" rel="noopener">文档</a>
+                    <a href="https://github.com/ExploreMaths/Jaon/releases" target="_blank" rel="noopener">Release</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
