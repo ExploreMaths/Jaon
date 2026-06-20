@@ -1,8 +1,8 @@
 字节码与编译器
 ==============
 
-``helios/compiler.py`` 将类型检查后的 AST 编译为自定义 Bytecode，
-存储在 ``helios/bytecode.py`` 定义的 ``CodeObject`` 中。
+``jaon/compiler.py`` 将类型检查后的 AST 编译为自定义 Bytecode，
+存储在 ``jaon/bytecode.py`` 定义的 ``CodeObject`` 中。
 
 核心指令
 --------
@@ -42,4 +42,4 @@
 
 .. code-block:: bash
 
-    python -m helios dis examples/control_flow.helios
+    python -m jaon dis examples/control_flow.jaon

@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-const HELIOS_TERMINAL_NAME = 'Helios';
+const JAON_TERMINAL_NAME = 'Jaon';
 
 export function activate(context: vscode.ExtensionContext) {
-    const runCommand = vscode.commands.registerCommand('helios.run', runHeliosFile);
+    const runCommand = vscode.commands.registerCommand('jaon.run', runJaonFile);
     context.subscriptions.push(runCommand);
 }
 
@@ -12,16 +12,16 @@ export function deactivate() {
     // Nothing to clean up.
 }
 
-function runHeliosFile() {
+function runJaonFile() {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
-        vscode.window.showErrorMessage('No active Helios file to run.');
+        vscode.window.showErrorMessage('No active Jaon file to run.');
         return;
     }
 
     const document = editor.document;
-    if (document.languageId !== 'helios') {
-        vscode.window.showErrorMessage('The active file is not a Helios source file.');
+    if (document.languageId !== 'jaon') {
+        vscode.window.showErrorMessage('The active file is not a Jaon source file.');
         return;
     }
 
@@ -31,13 +31,13 @@ function runHeliosFile() {
         return;
     }
 
-    const config = vscode.workspace.getConfiguration('helios');
-    const executable = config.get<string>('executablePath', 'helios');
+    const config = vscode.workspace.getConfiguration('jaon');
+    const executable = config.get<string>('executablePath', 'jaon');
 
-    // Prefer a terminal already named "Helios"; otherwise create one.
-    let terminal = vscode.window.terminals.find(t => t.name === HELIOS_TERMINAL_NAME);
+    // Prefer a terminal already named "Jaon"; otherwise create one.
+    let terminal = vscode.window.terminals.find(t => t.name === JAON_TERMINAL_NAME);
     if (!terminal) {
-        terminal = vscode.window.createTerminal(HELIOS_TERMINAL_NAME);
+        terminal = vscode.window.createTerminal(JAON_TERMINAL_NAME);
     }
 
     const command = `${quotePath(executable)} run ${quotePath(filePath)}`;

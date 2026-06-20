@@ -1,21 +1,21 @@
 示例程序
 ========
 
-``examples/`` 目录包含多个可运行的 Helios 示例程序。
+``examples/`` 目录包含多个可运行的 Jaon 示例程序。
 
-hello.helios
+hello.jaon
 ------------
 
 最基础的 Hello World 程序::
 
-    println("Hello, Helios!");
+    println("Hello, Jaon!");
 
 运行::
 
-    python -m helios run examples/hello.helios
+    python -m jaon run examples/hello.jaon
 
 
-control_flow.helios
+control_flow.jaon
 -------------------
 
 展示函数、递归、条件判断与循环::
@@ -30,7 +30,7 @@ control_flow.helios
     println(factorial(5));
 
 
-classes.helios
+classes.jaon
 --------------
 
 展示类、继承、构造器与方法::
@@ -49,7 +49,7 @@ classes.helios
     println(dog.speak());
 
 
-fibonacci.helios
+fibonacci.jaon
 ----------------
 
 递归与迭代实现斐波那契数列::
@@ -62,7 +62,7 @@ fibonacci.helios
     }
 
 
-sorting.helios
+sorting.jaon
 --------------
 
 冒泡排序与列表操作::
@@ -72,7 +72,7 @@ sorting.helios
     }
 
 
-exceptions.helios
+exceptions.jaon
 -----------------
 
 异常抛出与捕获::
@@ -84,7 +84,7 @@ exceptions.helios
     }
 
 
-advanced.helios
+advanced.jaon
 ---------------
 
 匿名函数、字符串/列表方法、字典、类型查询等综合示例。

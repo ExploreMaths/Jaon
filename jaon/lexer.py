@@ -1,4 +1,4 @@
-"""Lexer for the Helios programming language."""
+"""Lexer for the Jaon programming language."""
 from __future__ import annotations
 
 from dataclasses import dataclass

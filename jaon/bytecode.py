@@ -1,4 +1,4 @@
-"""Bytecode definitions for the Helios VM."""
+"""Bytecode definitions for the Jaon VM."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field

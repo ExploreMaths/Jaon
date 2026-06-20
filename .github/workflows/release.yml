@@ -40,7 +40,7 @@ jobs:
           npm install
           npm run compile
           npx @vscode/vsce package
-          Copy-Item helios-lang-*.vsix ..\..\dist\
+          Copy-Item jaon-lang-*.vsix ..\..\dist\
           cd ..\..
 
       - name: Install Inno Setup
@@ -57,8 +57,8 @@ jobs:
           name: compiler-windows
           path: |
             dist/compiler.exe
-            dist/Helios-Setup.exe
-            dist/helios-lang-*.vsix
+            dist/Jaon-Setup.exe
+            dist/jaon-lang-*.vsix
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -66,8 +66,8 @@ jobs:
         with:
           files: |
             dist/compiler.exe
-            dist/Helios-Setup.exe
-            dist/helios-lang-*.vsix
+            dist/Jaon-Setup.exe
+            dist/jaon-lang-*.vsix
           generate_release_notes: true
           prerelease: true
 

@@ -4,7 +4,7 @@
 开发流程
 --------
 
-1. 在 ``helios/`` 中修改源码。
+1. 在 ``jaon/`` 中修改源码。
 2. 在 ``tests/`` 中添加或更新单元测试。
 3. 在 ``examples/`` 中添加示例程序。
 4. 更新 ``sphinx-docs/`` 中的文档。
@@ -17,12 +17,12 @@
 
 新增语法通常需要修改以下文件：
 
-1. ``helios/lexer.py``：添加 Token 类型
-2. ``helios/ast_nodes.py``：添加 AST 节点
-3. ``helios/parser.py``：添加解析规则
-4. ``helios/analyzer.py``：添加类型检查
-5. ``helios/compiler.py``：添加字节码生成
-6. ``helios/vm.py``：添加字节码执行
+1. ``jaon/lexer.py``：添加 Token 类型
+2. ``jaon/ast_nodes.py``：添加 AST 节点
+3. ``jaon/parser.py``：添加解析规则
+4. ``jaon/analyzer.py``：添加类型检查
+5. ``jaon/compiler.py``：添加字节码生成
+6. ``jaon/vm.py``：添加字节码执行
 7. ``tests/``：添加测试
 8. ``sphinx-docs/``：更新文档
 

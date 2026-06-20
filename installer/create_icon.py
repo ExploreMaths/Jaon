@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Create the .helios file association icon matching the Helios logo."""
+"""Create the .jaon file association icon matching the Jaon logo."""
 import importlib.util
 import sys
 from pathlib import Path
@@ -22,8 +22,8 @@ def main():
     out_dir = Path(__file__).resolve().parent
     sizes = [16, 32, 48, 64, 128, 256]
     images = [create_logo(s) for s in sizes]
-    save_ico(images, out_dir / "helios-file.ico")
-    print("Created helios-file.ico with sizes:", [img.size for img in images])
+    save_ico(images, out_dir / "jaon-file.ico")
+    print("Created jaon-file.ico with sizes:", [img.size for img in images])
 
 
 if __name__ == "__main__":

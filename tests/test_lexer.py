@@ -1,6 +1,6 @@
 import unittest
 
-from helios.lexer import tokenize, TokenType
+from jaon.lexer import tokenize, TokenType
 
 
 class LexerTest(unittest.TestCase):

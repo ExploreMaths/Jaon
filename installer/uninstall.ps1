@@ -1,4 +1,4 @@
-# Helios Uninstaller for Windows
+# Jaon Uninstaller for Windows
 # Run as Administrator
 
 $ErrorActionPreference = "Stop"
@@ -9,17 +9,17 @@ if (-not $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Adm
     exit 1
 }
 
-$installDir = "$env:LOCALAPPDATA\Helios"
+$installDir = "$env:LOCALAPPDATA\Jaon"
 $binDir = Join-Path $installDir "bin"
 
-Write-Host "Uninstalling Helios..." -ForegroundColor Cyan
+Write-Host "Uninstalling Jaon..." -ForegroundColor Cyan
 
 # Remove file association
-if (Test-Path "HKCU:\Software\Classes\.helios") {
-    Remove-Item -Path "HKCU:\Software\Classes\.helios" -Recurse -Force
+if (Test-Path "HKCU:\Software\Classes\.jaon") {
+    Remove-Item -Path "HKCU:\Software\Classes\.jaon" -Recurse -Force
 }
-if (Test-Path "HKCU:\Software\Classes\HeliosSourceFile") {
-    Remove-Item -Path "HKCU:\Software\Classes\HeliosSourceFile" -Recurse -Force
+if (Test-Path "HKCU:\Software\Classes\JaonSourceFile") {
+    Remove-Item -Path "HKCU:\Software\Classes\JaonSourceFile" -Recurse -Force
 }
 
 # Remove PATH entry
@@ -27,12 +27,12 @@ $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($userPath -like "*$binDir*") {
     $newPath = ($userPath -split ';' | Where-Object { $_ -ne $binDir }) -join ';'
     [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
-    Write-Host "Removed Helios from user PATH." -ForegroundColor Green
+    Write-Host "Removed Jaon from user PATH." -ForegroundColor Green
 }
 
 # Remove uninstall registry entry
-if (Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Helios") {
-    Remove-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Helios" -Recurse -Force
+if (Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Jaon") {
+    Remove-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Jaon" -Recurse -Force
 }
 
 # Remove installation directory
@@ -44,7 +44,7 @@ if (Test-Path $installDir) {
 # Uninstall VS Code extension if VS Code is present
 if (Get-Command code -ErrorAction SilentlyContinue) {
     Write-Host "Uninstalling VS Code extension..." -ForegroundColor Cyan
-    code --uninstall-extension exploremaths.helios-lang | Out-Null
+    code --uninstall-extension exploremaths.jaon-lang | Out-Null
     Write-Host "VS Code extension uninstalled." -ForegroundColor Green
 }
 

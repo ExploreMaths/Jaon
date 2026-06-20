@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate the Helios logo in modern geometric style."""
+"""Generate the Jaon logo in modern geometric style."""
 import io
 import math
 import struct
@@ -42,58 +42,46 @@ def radial_gradient(draw, center, radius, inner, outer):
         draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=color)
 
 
-def draw_ring_segment(draw, center, radius, width, start_angle, end_angle, color):
-    """Draw an annular arc segment."""
+def draw_nested_squares(draw, center, radius, color):
+    """Draw a minimal mark of three nested rounded squares + a dot."""
     cx, cy = center
-    bbox = [cx - radius, cy - radius, cx + radius, cy + radius]
-    draw.arc(bbox, start=start_angle, end=end_angle, fill=color, width=width)
 
-
-def draw_glow(draw, center, radius, color, steps=40):
-    """Draw a soft glow behind a point."""
-    cx, cy = center
-    base = hex_to_rgba(color)
-    for i in range(steps, 0, -1):
-        ratio = i / steps
-        alpha = int(80 * ratio ** 2)
-        r = radius * (1 + 0.6 * (1 - ratio))
-        draw.ellipse(
-            [cx - r, cy - r, cx + r, cy + r],
-            fill=base[:3] + (alpha,),
-        )
-
-
-def draw_modern_h(draw, center, radius, color):
-    """Draw a geometric, slightly tech-styled H mark."""
-    cx, cy = center
-    bar = radius * 0.22
-    half_h = radius * 0.62
-    half_w = radius * 0.42
-    radius_corner = bar * 0.5
-
-    # Left vertical bar
+    # Outer rounded square outline
+    outer = radius * 0.80
     draw.rounded_rectangle(
-        [cx - half_w - bar / 2, cy - half_h, cx - half_w + bar / 2, cy + half_h],
-        radius=radius_corner,
+        [cx - outer, cy - outer, cx + outer, cy + outer],
+        radius=outer * 0.30,
+        outline=color,
+        width=max(2, int(radius * 0.08)),
+    )
+
+    # Middle rounded square outline
+    middle = radius * 0.52
+    draw.rounded_rectangle(
+        [cx - middle, cy - middle, cx + middle, cy + middle],
+        radius=middle * 0.30,
+        outline=color,
+        width=max(2, int(radius * 0.07)),
+    )
+
+    # Inner solid rounded square
+    inner = radius * 0.28
+    draw.rounded_rectangle(
+        [cx - inner, cy - inner, cx + inner, cy + inner],
+        radius=inner * 0.30,
         fill=color,
     )
-    # Right vertical bar
-    draw.rounded_rectangle(
-        [cx + half_w - bar / 2, cy - half_h, cx + half_w + bar / 2, cy + half_h],
-        radius=radius_corner,
-        fill=color,
-    )
-    # Horizontal connector, slightly thinner
-    h_bar = bar * 0.75
-    draw.rounded_rectangle(
-        [cx - half_w + bar / 2, cy - h_bar / 2, cx + half_w - bar / 2, cy + h_bar / 2],
-        radius=h_bar * 0.5,
-        fill=color,
+
+    # Central dot
+    dot_r = radius * 0.10
+    draw.ellipse(
+        [cx - dot_r, cy - dot_r, cx + dot_r, cy + dot_r],
+        fill=hex_to_rgba(COLORS["indigo"]),
     )
 
 
 def create_logo(size: int) -> Image.Image:
-    """Create the modern Helios logo."""
+    """Create the modern Jaon logo."""
     scale = 4
     big = size * scale
     img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
@@ -101,79 +89,29 @@ def create_logo(size: int) -> Image.Image:
 
     cx = cy = big // 2
 
-    # Proportions relative to canvas
-    orbit_radius = int(big * 0.40)
-    orbit_width = max(2, int(big * 0.025))
-    disk_radius = int(big * 0.28)
-    core_radius = int(big * 0.18)
-    sun_radius = int(big * 0.07)
-
-    # Orbit gap angle: the sun sits at the gap
-    gap_deg = 42
-    start_orbit = 25
-    end_orbit = 360 - gap_deg
-
-    # Soft orbit glow
-    glow_radius = orbit_radius + orbit_width * 3
-    draw_glow(draw, (cx, cy), glow_radius, COLORS["violet"], steps=60)
-
-    # Orbit ring gradient: draw many thin arcs
-    for i in range(orbit_width):
-        ratio = i / (orbit_width - 1) if orbit_width > 1 else 0
-        # Outer edge cyan, inner edge violet
-        color = blend_rgba(hex_to_rgba(COLORS["cyan"]), hex_to_rgba(COLORS["violet"]), ratio)
-        r = orbit_radius - orbit_width // 2 + i
-        draw.arc(
-            [cx - r, cy - r, cx + r, cy + r],
-            start=start_orbit,
-            end=end_orbit,
-            fill=color,
-            width=1,
-        )
-
     # Main disk
+    disk_r = int(big * 0.34)
     radial_gradient(
         draw,
         (cx, cy),
-        disk_radius,
+        disk_r,
         hex_to_rgba(COLORS["indigo"]),
         blend_rgba(hex_to_rgba(COLORS["violet"]), (0, 0, 0, 255), 0.55),
     )
 
-    # Inner core glow
+    # Inner glow
+    glow_r = int(big * 0.18)
     radial_gradient(
         draw,
         (cx, cy),
-        core_radius,
-        hex_to_rgba(COLORS["violet"], 160),
+        glow_r,
+        hex_to_rgba(COLORS["violet"], 140),
         hex_to_rgba(COLORS["indigo"], 0),
     )
 
-    # Subtle edge ring
-    edge_ring = int(disk_radius * 0.92)
-    draw.ellipse(
-        [cx - edge_ring, cy - edge_ring, cx + edge_ring, cy + edge_ring],
-        outline=hex_to_rgba(COLORS["cyan"], 80),
-        width=max(1, big // 200),
-    )
-
-    # Sun orb at the orbit gap
-    sun_angle = math.radians(-gap_deg / 2)
-    sx = cx + orbit_radius * math.cos(sun_angle)
-    sy = cy + orbit_radius * math.sin(sun_angle)
-
-    draw_glow(draw, (sx, sy), sun_radius * 1.6, COLORS["gold"], steps=30)
-    radial_gradient(
-        draw,
-        (sx, sy),
-        sun_radius,
-        (255, 255, 255, 240),
-        hex_to_rgba(COLORS["gold"]),
-    )
-
-    # Modern H mark
-    h_radius = int(big * 0.14)
-    draw_modern_h(draw, (cx, cy), h_radius, hex_to_rgba(COLORS["white"], 245))
+    # Nested squares mark
+    mark_r = int(big * 0.14)
+    draw_nested_squares(draw, (cx, cy), mark_r, hex_to_rgba(COLORS["white"], 245))
 
     # Downscale
     if size != big:
@@ -222,10 +160,10 @@ def create_banner(width: int, height: int) -> Image.Image:
     font_large, font_small = _load_fonts(height)
 
     text_x = int(height * 0.14) + logo_size + int(height * 0.12)
-    bbox = draw.textbbox((0, 0), "Helios", font=font_large)
+    bbox = draw.textbbox((0, 0), "Jaon", font=font_large)
     draw.text(
         (text_x, (height - (bbox[3] - bbox[1])) // 2 - bbox[1] - int(height * 0.04)),
-        "Helios",
+        "Jaon",
         fill=text,
         font=font_large,
     )
@@ -262,11 +200,11 @@ def create_social(width: int, height: int) -> Image.Image:
         font_large = ImageFont.load_default()
         font_small = ImageFont.load_default()
 
-    bbox = draw.textbbox((0, 0), "Helios", font=font_large)
+    bbox = draw.textbbox((0, 0), "Jaon", font=font_large)
     text_width = bbox[2] - bbox[0]
     draw.text(
         ((width - text_width) // 2 - bbox[0], int(height * 0.62)),
-        "Helios",
+        "Jaon",
         fill=text_color,
         font=font_large,
     )
@@ -331,22 +269,22 @@ def main():
 
     for size in sizes:
         logo = create_logo(size)
-        logo.save(out_dir / f"helios-logo-{size}x{size}.png")
+        logo.save(out_dir / f"jaon-logo-{size}x{size}.png")
         images[size] = logo
-        print(f"Saved helios-logo-{size}x{size}.png")
+        print(f"Saved jaon-logo-{size}x{size}.png")
 
     ico_sizes = [16, 32, 48, 64, 128, 256]
     ico_images = [images[s] for s in ico_sizes]
-    save_ico(ico_images, out_dir / "helios-logo.ico")
-    print("Saved helios-logo.ico")
+    save_ico(ico_images, out_dir / "jaon-logo.ico")
+    print("Saved jaon-logo.ico")
 
     banner = create_banner(1200, 400)
-    banner.save(out_dir / "helios-banner.png")
-    print("Saved helios-banner.png")
+    banner.save(out_dir / "jaon-banner.png")
+    print("Saved jaon-banner.png")
 
     social = create_social(1280, 640)
-    social.save(out_dir / "helios-social.png")
-    print("Saved helios-social.png")
+    social.save(out_dir / "jaon-social.png")
+    print("Saved jaon-social.png")
 
 
 if __name__ == "__main__":

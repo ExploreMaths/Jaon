@@ -1,4 +1,4 @@
-"""Recursive-descent parser for the Helios programming language."""
+"""Recursive-descent parser for the Jaon programming language."""
 from __future__ import annotations
 
 from typing import List, Optional

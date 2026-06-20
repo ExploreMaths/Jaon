@@ -33,9 +33,9 @@ jobs:
 
       - name: Run examples
         run: |
-          python -m helios run examples/hello.helios
-          python -m helios run examples/control_flow.helios
-          python -m helios run examples/classes.helios
+          python -m jaon run examples/hello.jaon
+          python -m jaon run examples/control_flow.jaon
+          python -m jaon run examples/classes.jaon
 
   lint:
     runs-on: ubuntu-latest
@@ -55,4 +55,4 @@ jobs:
 
       - name: Lint with flake8
         run: |
-          flake8 helios tests scripts --max-line-length=120 --extend-ignore=E203,W503
+          flake8 jaon tests scripts --max-line-length=120 --extend-ignore=E203,W503

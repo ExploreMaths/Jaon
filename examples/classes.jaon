@@ -1,4 +1,4 @@
-// Object-oriented programming in Helios
+// Object-oriented programming in Jaon
 class Animal {
     public var name: String = "";
 

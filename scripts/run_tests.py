@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Run the Helios language test suite."""
+"""Run the Jaon language test suite."""
 import subprocess
 import sys
 from pathlib import Path

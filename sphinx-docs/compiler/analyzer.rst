@@ -1,7 +1,7 @@
 语义分析器
 ==========
 
-``helios/analyzer.py`` 对 AST 进行类型检查和作用域解析。
+``jaon/analyzer.py`` 对 AST 进行类型检查和作用域解析。
 
 主要职责
 --------
@@ -27,9 +27,9 @@
 
 .. code-block:: python
 
-    from helios.lexer import tokenize
-    from helios.parser import parse
-    from helios.analyzer import analyze
+    from jaon.lexer import tokenize
+    from jaon.parser import parse
+    from jaon.analyzer import analyze
 
     tokens = tokenize('var x: Int = "hello";')
     program = parse(tokens)

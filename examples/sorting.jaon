@@ -1,4 +1,4 @@
-// Sorting algorithms in Helios
+// Sorting algorithms in Jaon
 fun bubble_sort(arr: List): List {
     var n = len(arr);
     var i = 0;

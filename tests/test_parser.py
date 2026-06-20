@@ -1,8 +1,8 @@
 import unittest
 
-from helios.lexer import tokenize
-from helios.parser import parse
-from helios import ast_nodes as ast
+from jaon.lexer import tokenize
+from jaon.parser import parse
+from jaon import ast_nodes as ast
 
 
 class ParserTest(unittest.TestCase):

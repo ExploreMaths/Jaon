@@ -1,11 +1,11 @@
 架构概览
 ========
 
-Helios 编译器从源代码到执行结果经历以下阶段：
+Jaon 编译器从源代码到执行结果经历以下阶段：
 
 .. code-block:: text
 
-    .helios 源码
+    .jaon 源码
        │
        ▼
     Lexer（词法分析）

@@ -10,9 +10,9 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
-project = 'Helios'
-copyright = '2026, Helios Project'
-author = 'Helios Project'
+project = 'Jaon'
+copyright = '2026, Jaon Project'
+author = 'Jaon Project'
 release = '0.0.1'
 version = '0.0.1'
 
@@ -38,8 +38,8 @@ master_doc = 'index'
 # -- Options for HTML output -------------------------------------------------
 html_theme = 'furo'
 html_static_path = ['_static']
-html_title = 'Helios 编程语言文档'
-html_short_title = 'Helios'
+html_title = 'Jaon 编程语言文档'
+html_short_title = 'Jaon'
 
 # Furo theme options
 html_theme_options = {
@@ -53,8 +53,8 @@ html_css_files = [
 ]
 
 # Logo and favicon
-html_logo = "../assets/logo/helios-logo-256x256.png"
-html_favicon = "../assets/logo/helios-logo.ico"
+html_logo = "../assets/logo/jaon-logo-256x256.png"
+html_favicon = "../assets/logo/jaon-logo.ico"
 
 # -- Intersphinx mapping -----------------------------------------------------
 intersphinx_mapping = {

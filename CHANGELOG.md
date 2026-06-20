@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- 初始实现 Helios 编程语言
-- 自定义文件后缀 `.helios`
+- 初始实现 Jaon 编程语言
+- 自定义文件后缀 `.jaon`
 - 完整编译器链：Lexer、Parser、Analyzer、Bytecode Compiler、Stack VM
 - 静态类型系统 + 局部类型推断
 - 类、继承、构造器、访问控制

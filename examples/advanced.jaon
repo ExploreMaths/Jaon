@@ -1,4 +1,4 @@
-// Advanced Helios features
+// Advanced Jaon features
 
 // Higher-order function
 fun apply(f: Any, x: Int): Int {

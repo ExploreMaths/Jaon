@@ -46,7 +46,7 @@
 匿名函数
 --------
 
-Helios 支持匿名函数表达式，可赋值给变量或作为参数传递::
+Jaon 支持匿名函数表达式，可赋值给变量或作为参数传递::
 
     var double = fun(x: Int): Int { return x * 2; };
     println(double(5));  // 10

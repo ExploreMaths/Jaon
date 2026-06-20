@@ -1,22 +1,22 @@
-# Helios 项目约定
+# Jaon 项目约定
 
 ## 源文件后缀
 
-所有 Helios 源代码文件使用 `.helios` 后缀。
+所有 Jaon 源代码文件使用 `.jaon` 后缀。
 
 ## 构建与运行
 
 - 安装：`pip install -e .`
-- 运行文件：`python -m helios run <file.helios>` 或 `helios run <file.helios>`
-- 独立可执行文件：`dist/compiler.exe run <file.helios>`
-- 交互式 REPL：`python -m helios repl` 或 `helios repl`
-- 反汇编查看字节码：`python -m helios dis <file.helios>`
+- 运行文件：`python -m jaon run <file.jaon>` 或 `jaon run <file.jaon>`
+- 独立可执行文件：`dist/compiler.exe run <file.jaon>`
+- 交互式 REPL：`python -m jaon repl` 或 `jaon repl`
+- 反汇编查看字节码：`python -m jaon dis <file.jaon>`
 - 运行测试：`python -m unittest discover tests` 或 `python scripts/run_tests.py`
 
 ## 项目结构
 
-- `helios/`：编译器与虚拟机源码。
-- `examples/`：`.helios` 示例程序。
+- `jaon/`：编译器与虚拟机源码。
+- `examples/`：`.jaon` 示例程序。
 - `tests/`：单元测试。
 - `scripts/`：辅助脚本。
 - `sphinx-docs/`：Sphinx 中文文档。
@@ -54,7 +54,7 @@ Inno Setup 打包：
 iscc installer/setup.iss
 ```
 
-安装后双击 `.helios` 文件即可执行。
+安装后双击 `.jaon` 文件即可执行。
 
 ## 编码风格
 

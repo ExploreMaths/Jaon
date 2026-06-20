@@ -1,13 +1,13 @@
 {
-  "name": "helios-lang",
-  "displayName": "Helios Language Support",
-  "description": "Syntax highlighting and run button for the Helios programming language.",
+  "name": "jaon-lang",
+  "displayName": "Jaon Language Support",
+  "description": "Syntax highlighting and run button for the Jaon programming language.",
   "version": "0.0.1",
   "publisher": "exploremaths",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ExploreMaths/Helios.git"
+    "url": "https://github.com/ExploreMaths/Jaon.git"
   },
   "engines": {
     "vscode": "^1.80.0"
@@ -17,23 +17,23 @@
     "Debuggers"
   ],
   "keywords": [
-    "helios",
+    "jaon",
     "language",
     "programming language"
   ],
   "activationEvents": [
-    "onLanguage:helios"
+    "onLanguage:jaon"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "languages": [
       {
-        "id": "helios",
+        "id": "jaon",
         "aliases": [
-          "Helios"
+          "Jaon"
         ],
         "extensions": [
-          ".helios"
+          ".jaon"
         ],
         "configuration": "./language-configuration.json",
         "icon": {
@@ -44,40 +44,40 @@
     ],
     "grammars": [
       {
-        "language": "helios",
-        "scopeName": "source.helios",
-        "path": "./syntaxes/helios.tmLanguage.json"
+        "language": "jaon",
+        "scopeName": "source.jaon",
+        "path": "./syntaxes/jaon.tmLanguage.json"
       }
     ],
     "commands": [
       {
-        "command": "helios.run",
-        "title": "Run Helios File",
+        "command": "jaon.run",
+        "title": "Run Jaon File",
         "icon": "$(play)"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "when": "resourceExtname == .helios",
-          "command": "helios.run",
+          "when": "resourceExtname == .jaon",
+          "command": "jaon.run",
           "group": "navigation@1"
         }
       ],
       "commandPalette": [
         {
-          "command": "helios.run",
-          "when": "editorLangId == helios"
+          "command": "jaon.run",
+          "when": "editorLangId == jaon"
         }
       ]
     },
     "configuration": {
-      "title": "Helios",
+      "title": "Jaon",
       "properties": {
-        "helios.executablePath": {
+        "jaon.executablePath": {
           "type": "string",
-          "default": "helios",
-          "description": "Path to the Helios executable. Use 'helios' if it is on PATH, or an absolute path to compiler.exe."
+          "default": "jaon",
+          "description": "Path to the Jaon executable. Use 'jaon' if it is on PATH, or an absolute path to compiler.exe."
         }
       }
     }

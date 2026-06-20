@@ -1,4 +1,4 @@
-"""Abstract syntax tree nodes for the Helios programming language."""
+"""Abstract syntax tree nodes for the Jaon programming language."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field

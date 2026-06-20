@@ -1,8 +1,8 @@
 import unittest
 
-from helios.lexer import tokenize
-from helios.parser import parse
-from helios.analyzer import analyze, HeliosTypeError
+from jaon.lexer import tokenize
+from jaon.parser import parse
+from jaon.analyzer import analyze, JaonTypeError
 
 
 class AnalyzerTest(unittest.TestCase):
@@ -21,11 +21,11 @@ class AnalyzerTest(unittest.TestCase):
         self.check("class Point { var x: Int = 0; constructor() {} public fun getX(): Int { return this.x; } }")
 
     def test_type_error(self):
-        with self.assertRaises(HeliosTypeError):
+        with self.assertRaises(JaonTypeError):
             self.check("var x: Int = \"hello\";")
 
     def test_undefined_variable(self):
-        with self.assertRaises(HeliosTypeError):
+        with self.assertRaises(JaonTypeError):
             self.check("println(z);")
 
 

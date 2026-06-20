@@ -1,10 +1,10 @@
-"""Semantic analyzer / type checker for Helios."""
+"""Semantic analyzer / type checker for Jaon."""
 from __future__ import annotations
 
 from typing import Dict, List, Optional
 
 from . import ast_nodes as ast
-from .errors import HeliosTypeError
+from .errors import JaonTypeError
 
 
 class Type:
@@ -136,7 +136,7 @@ class Analyzer:
         self.global_scope.define("type", FunctionType([ANY], STRING))
 
     def error(self, message: str) -> None:
-        raise HeliosTypeError(message)
+        raise JaonTypeError(message)
 
     def resolve_type(self, node: ast.TypeNode) -> Type:
         name = node.name

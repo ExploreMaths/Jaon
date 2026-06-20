@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: 报告 Helios 编译器或运行时的错误
+about: 报告 Jaon 编译器或运行时的错误
 title: '[BUG] '
 labels: bug
 assignees: ''
@@ -12,8 +12,8 @@ assignees: ''
 **复现步骤**
 复现该问题的最小代码示例：
 
-```helios
-// 请在此处粘贴 .helios 代码
+```jaon
+// 请在此处粘贴 .jaon 代码
 ```
 
 步骤：
@@ -31,7 +31,7 @@ assignees: ''
 
 - 操作系统：
 - Python 版本：
-- Helios 版本：
+- Jaon 版本：
 
 **补充信息**
 添加任何其他上下文或截图。

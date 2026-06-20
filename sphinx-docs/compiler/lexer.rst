@@ -1,7 +1,7 @@
 词法分析器
 ==========
 
-``helios/lexer.py`` 负责将 ``.helios`` 源码转换为 Token 流。
+``jaon/lexer.py`` 负责将 ``.jaon`` 源码转换为 Token 流。
 
 主要 Token 类型
 ---------------
@@ -17,7 +17,7 @@
 
 .. code-block:: python
 
-    from helios.lexer import tokenize
+    from jaon.lexer import tokenize
 
     tokens = tokenize('var x = 10;')
     for token in tokens:

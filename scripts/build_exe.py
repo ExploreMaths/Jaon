@@ -20,7 +20,7 @@ def main() -> int:
         "--output-filename=compiler.exe",
         "--output-dir=dist",
         "--windows-console-mode=force",
-        "--windows-icon-from-ico=assets/logo/helios-logo.ico",
+        "--windows-icon-from-ico=assets/logo/jaon-logo.ico",
         "--assume-yes-for-downloads",
         "compiler.py",
     ]
@@ -42,7 +42,7 @@ def main() -> int:
             size = exe_path.stat().st_size
             print(f"\nSuccess: {exe_path} ({size / 1024 / 1024:.2f} MB)")
             print("\nTry it out:")
-            print(f"  {exe_path} run examples/hello.helios")
+            print(f"  {exe_path} run examples/hello.jaon")
     else:
         print("Build failed.", file=sys.stderr)
 

@@ -1,4 +1,4 @@
-"""AST-to-bytecode compiler for the Helios language."""
+"""AST-to-bytecode compiler for the Jaon language."""
 from __future__ import annotations
 
 from typing import Any, List

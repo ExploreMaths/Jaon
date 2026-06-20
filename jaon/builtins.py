@@ -1,41 +1,41 @@
-"""Built-in functions and values for the Helios VM."""
+"""Built-in functions and values for the Jaon VM."""
 from __future__ import annotations
 
 import math
 from typing import Any, List
 
-from .errors import HeliosRuntimeError, HeliosTypeError
+from .errors import JaonRuntimeError, JaonTypeError
 
 
-def helios_print(*args):
+def jaon_print(*args):
     print(*args, end="")
 
 
-def helios_println(*args):
+def jaon_println(*args):
     print(*args)
 
 
-def helios_input(prompt: str = "") -> str:
+def jaon_input(prompt: str = "") -> str:
     return input(prompt)
 
 
-def helios_len(obj: Any) -> int:
+def jaon_len(obj: Any) -> int:
     if hasattr(obj, "__len__"):
         return len(obj)
-    raise HeliosTypeError(f"Object of type {type(obj).__name__} has no length")
+    raise JaonTypeError(f"Object of type {type(obj).__name__} has no length")
 
 
-def helios_range(*args) -> List[int]:
+def jaon_range(*args) -> List[int]:
     if len(args) == 1:
         return list(range(args[0]))
     if len(args) == 2:
         return list(range(args[0], args[1]))
     if len(args) == 3:
         return list(range(args[0], args[1], args[2]))
-    raise HeliosRuntimeError("range expects 1-3 arguments")
+    raise JaonRuntimeError("range expects 1-3 arguments")
 
 
-def helios_str(obj: Any) -> str:
+def jaon_str(obj: Any) -> str:
     if obj is None:
         return "null"
     if isinstance(obj, bool):
@@ -46,26 +46,26 @@ def helios_str(obj: Any) -> str:
     return str(obj)
 
 
-def helios_int(obj: Any) -> int:
+def jaon_int(obj: Any) -> int:
     if isinstance(obj, int):
         return obj
     if isinstance(obj, float):
         return int(obj)
     if isinstance(obj, str):
         return int(obj)
-    raise HeliosTypeError(f"Cannot convert {type(obj).__name__} to Int")
+    raise JaonTypeError(f"Cannot convert {type(obj).__name__} to Int")
 
 
-def helios_float(obj: Any) -> float:
+def jaon_float(obj: Any) -> float:
     if isinstance(obj, (int, float)):
         return float(obj)
     if isinstance(obj, str):
         return float(obj)
-    raise HeliosTypeError(f"Cannot convert {type(obj).__name__} to Float")
+    raise JaonTypeError(f"Cannot convert {type(obj).__name__} to Float")
 
 
-def helios_type(obj: Any) -> str:
-    from .vm import HeliosInstance, HeliosFunction, HeliosMethod, HeliosClass
+def jaon_type(obj: Any) -> str:
+    from .vm import JaonInstance, JaonFunction, JaonMethod, JaonClass
     if obj is None:
         return "Null"
     if isinstance(obj, bool):
@@ -80,25 +80,25 @@ def helios_type(obj: Any) -> str:
         return "List"
     if isinstance(obj, dict):
         return "Dict"
-    if isinstance(obj, HeliosInstance):
+    if isinstance(obj, JaonInstance):
         return obj.cls.name
-    if isinstance(obj, HeliosClass):
+    if isinstance(obj, JaonClass):
         return "Class"
-    if isinstance(obj, (HeliosFunction, HeliosMethod)):
+    if isinstance(obj, (JaonFunction, JaonMethod)):
         return "Function"
     return type(obj).__name__
 
 
 BUILTINS = {
-    "print": helios_print,
-    "println": helios_println,
-    "input": helios_input,
-    "len": helios_len,
-    "range": helios_range,
-    "str": helios_str,
-    "int": helios_int,
-    "float": helios_float,
-    "type": helios_type,
+    "print": jaon_print,
+    "println": jaon_println,
+    "input": jaon_input,
+    "len": jaon_len,
+    "range": jaon_range,
+    "str": jaon_str,
+    "int": jaon_int,
+    "float": jaon_float,
+    "type": jaon_type,
     "math": {
         "pi": math.pi,
         "sqrt": math.sqrt,

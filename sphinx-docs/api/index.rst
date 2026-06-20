@@ -1,7 +1,7 @@
 API 参考
 ========
 
-本章节介绍 Helios 工具链的 Python API。
+本章节介绍 Jaon 工具链的 Python API。
 
 .. toctree::
    :maxdepth: 2

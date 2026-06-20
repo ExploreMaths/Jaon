@@ -3,13 +3,13 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "helios-lang"
+name = "jaon-lang"
 version = "0.0.1"
-description = "Helios - a programming language blending Python simplicity with Java rigor"
+description = "Jaon - a programming language blending Python simplicity with Java rigor"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Helios Project", email = "helios@example.com"}
+    {name = "Jaon Project", email = "jaon@example.com"}
 ]
 keywords = ["programming-language", "compiler", "interpreter", "python", "java"]
 classifiers = [
@@ -36,18 +36,18 @@ docs = [
 ]
 
 [project.scripts]
-helios = "helios.cli:main"
+jaon = "jaon.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/ExploreMaths/Helios"
-Documentation = "https://helios.readthedocs.io"
-Repository = "https://github.com/ExploreMaths/Helios"
-Issues = "https://github.com/ExploreMaths/Helios/issues"
+Homepage = "https://github.com/ExploreMaths/Jaon"
+Documentation = "https://jaon.readthedocs.io"
+Repository = "https://github.com/ExploreMaths/Jaon"
+Issues = "https://github.com/ExploreMaths/Jaon/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["helios*"]
+include = ["jaon*"]
 exclude = ["tests*", "sphinx-docs*", "scripts*", "examples*"]
 
 [tool.setuptools.package-data]
-helios = ["py.typed"]
+jaon = ["py.typed"]

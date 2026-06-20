@@ -3,5 +3,5 @@
 ## [0.0.1]
 
 - Initial release.
-- Syntax highlighting for `.helios` files.
-- Run button and command to execute Helios files in the integrated terminal.
+- Syntax highlighting for `.jaon` files.
+- Run button and command to execute Jaon files in the integrated terminal.

@@ -1,12 +1,12 @@
-# Contributing to Helios
+# Contributing to Jaon
 
-感谢你对 Helios 的兴趣！以下是参与贡献的指南。
+感谢你对 Jaon 的兴趣！以下是参与贡献的指南。
 
 ## 开发环境
 
 ```bash
-git clone https://github.com/ExploreMaths/Helios.git
-cd helios
+git clone https://github.com/ExploreMaths/Jaon.git
+cd jaon
 pip install -e .[dev,docs]
 ```
 
@@ -24,10 +24,10 @@ pip install -e .[dev,docs]
 python -m unittest discover tests
 
 # 运行示例
-python -m helios run examples/hello.helios
+python -m jaon run examples/hello.jaon
 
 # 代码风格检查
-flake8 helios tests scripts --max-line-length=120 --extend-ignore=E203,W503
+flake8 jaon tests scripts --max-line-length=120 --extend-ignore=E203,W503
 
 # 构建文档
 cd sphinx-docs

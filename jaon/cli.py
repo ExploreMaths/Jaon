@@ -1,4 +1,4 @@
-"""Command-line interface for the Helios language."""
+"""Command-line interface for the Jaon language."""
 from __future__ import annotations
 
 import argparse
@@ -8,7 +8,7 @@ from pathlib import Path
 from . import __version__
 from .lexer import tokenize, LexerError
 from .parser import parse, ParseError
-from .analyzer import analyze, HeliosTypeError
+from .analyzer import analyze, JaonTypeError
 from .compiler import compile_program
 from .vm import execute
 
@@ -48,7 +48,7 @@ class _NewlineTrackingStdout:
 
 
 def run_repl() -> None:
-    print(f"Helios {__version__} REPL")
+    print(f"Jaon {__version__} REPL")
     print("Type 'exit' or press Ctrl+C to quit.\n")
 
     # Replace stdout so we can keep the prompt on its own line after print().
@@ -88,7 +88,7 @@ def run_repl() -> None:
                 result = execute(compiler.module_code)
                 if result is not None:
                     print(result)
-            except (LexerError, ParseError, HeliosTypeError) as e:
+            except (LexerError, ParseError, JaonTypeError) as e:
                 print(f"Error: {e}", file=sys.stderr)
             except Exception as e:
                 print(f"Runtime error: {e}", file=sys.stderr)
@@ -119,24 +119,24 @@ def disassemble_file(path: str) -> None:
 
 
 def main(argv: list = None) -> int:
-    parser = argparse.ArgumentParser(prog="helios", description="Helios programming language")
-    parser.add_argument("--version", action="version", version=f"Helios {__version__}")
+    parser = argparse.ArgumentParser(prog="jaon", description="Jaon programming language")
+    parser.add_argument("--version", action="version", version=f"Jaon {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    run_parser = subparsers.add_parser("run", help="Run a Helios source file")
-    run_parser.add_argument("file", help="Path to .helios file")
+    run_parser = subparsers.add_parser("run", help="Run a Jaon source file")
+    run_parser.add_argument("file", help="Path to .jaon file")
 
     subparsers.add_parser("repl", help="Start interactive REPL")
 
-    dis_parser = subparsers.add_parser("dis", help="Disassemble a Helios source file")
-    dis_parser.add_argument("file", help="Path to .helios file")
+    dis_parser = subparsers.add_parser("dis", help="Disassemble a Jaon source file")
+    dis_parser.add_argument("file", help="Path to .jaon file")
 
     args = parser.parse_args(argv)
 
     if args.command == "run":
         try:
             run_file(args.file)
-        except (LexerError, ParseError, HeliosTypeError) as e:
+        except (LexerError, ParseError, JaonTypeError) as e:
             print(f"Error: {e}", file=sys.stderr)
             return 1
         except Exception as e:

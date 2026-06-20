@@ -1,7 +1,7 @@
 模块与导入
 ==========
 
-Helios 支持 ``import`` 语法声明模块依赖::
+Jaon 支持 ``import`` 语法声明模块依赖::
 
     import stdio;
 

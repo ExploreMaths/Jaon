@@ -2,11 +2,11 @@ import io
 import sys
 import unittest
 
-from helios.lexer import tokenize
-from helios.parser import parse
-from helios.analyzer import analyze
-from helios.compiler import compile_program
-from helios.vm import execute
+from jaon.lexer import tokenize
+from jaon.parser import parse
+from jaon.analyzer import analyze
+from jaon.compiler import compile_program
+from jaon.vm import execute
 
 
 class VMTest(unittest.TestCase):

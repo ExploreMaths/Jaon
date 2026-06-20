@@ -1,14 +1,14 @@
-"""Stack-based virtual machine for the Helios language."""
+"""Stack-based virtual machine for the Jaon language."""
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
 from .bytecode import OpCode, CodeObject, ClassObject
 from .builtins import BUILTINS
-from .errors import HeliosRuntimeError, HeliosTypeError, HeliosIndexError, HeliosAttributeError, HeliosNameError
+from .errors import JaonRuntimeError, JaonTypeError, JaonIndexError, JaonAttributeError, JaonNameError
 
 
-class HeliosFunction:
+class JaonFunction:
     def __init__(self, code: CodeObject, name: str = "", param_count: int = 0):
         self.code = code
         self.name = name or code.name
@@ -18,8 +18,8 @@ class HeliosFunction:
         return f"<function {self.name}>"
 
 
-class HeliosMethod:
-    def __init__(self, instance: "HeliosInstance", func: HeliosFunction):
+class JaonMethod:
+    def __init__(self, instance: "JaonInstance", func: JaonFunction):
         self.instance = instance
         self.func = func
 
@@ -27,15 +27,15 @@ class HeliosMethod:
         return f"<method {self.func.name} of {self.instance}>"
 
 
-class HeliosClass:
-    def __init__(self, class_obj: ClassObject, methods: Dict[str, HeliosFunction]):
+class JaonClass:
+    def __init__(self, class_obj: ClassObject, methods: Dict[str, JaonFunction]):
         self.name = class_obj.name
         self.base_name = class_obj.base
-        self.base_class: Optional[HeliosClass] = None
+        self.base_class: Optional[JaonClass] = None
         self.methods = methods
         self.fields = class_obj.fields
 
-    def find_method(self, name: str) -> Optional[HeliosFunction]:
+    def find_method(self, name: str) -> Optional[JaonFunction]:
         if name in self.methods:
             return self.methods[name]
         if self.base_class:
@@ -46,8 +46,8 @@ class HeliosClass:
         return f"<class {self.name}>"
 
 
-class HeliosInstance:
-    def __init__(self, cls: HeliosClass):
+class JaonInstance:
+    def __init__(self, cls: JaonClass):
         self.cls = cls
         self.fields: Dict[str, Any] = {}
 
@@ -56,8 +56,8 @@ class HeliosInstance:
             return self.fields[name]
         method = self.cls.find_method(name)
         if method:
-            return HeliosMethod(self, method)
-        raise HeliosAttributeError(f"'{self.cls.name}' object has no attribute '{name}'")
+            return JaonMethod(self, method)
+        raise JaonAttributeError(f"'{self.cls.name}' object has no attribute '{name}'")
 
     def set(self, name: str, value: Any) -> None:
         self.fields[name] = value
@@ -81,7 +81,7 @@ class VM:
         self.stack: List[Any] = []
         self.frames: List[CallFrame] = []
         self.globals: Dict[str, Any] = dict(BUILTINS)
-        self.classes: Dict[str, HeliosClass] = {}
+        self.classes: Dict[str, JaonClass] = {}
 
     def reset(self) -> None:
         self.stack.clear()
@@ -103,10 +103,10 @@ class VM:
                 self._build_class(const, module_code)
 
     def _build_class(self, class_obj: ClassObject, module_code: CodeObject) -> None:
-        methods: Dict[str, HeliosFunction] = {}
+        methods: Dict[str, JaonFunction] = {}
         for name, code in class_obj.methods.items():
-            methods[name] = HeliosFunction(code, code.name, code.param_count)
-        cls = HeliosClass(class_obj, methods)
+            methods[name] = JaonFunction(code, code.name, code.param_count)
+        cls = JaonClass(class_obj, methods)
         self.classes[class_obj.name] = cls
 
     def _execute(self) -> Any:
@@ -130,7 +130,7 @@ class VM:
                     elif name in self.classes:
                         self.stack.append(self.classes[name])
                     else:
-                        raise HeliosNameError(f"Name '{name}' is not defined")
+                        raise JaonNameError(f"Name '{name}' is not defined")
 
                 elif op == OpCode.STORE_NAME:
                     name = arg
@@ -140,7 +140,7 @@ class VM:
                 elif op == OpCode.LOAD_GLOBAL:
                     name = arg
                     if name not in self.globals:
-                        raise HeliosNameError(f"Global '{name}' is not defined")
+                        raise JaonNameError(f"Global '{name}' is not defined")
                     self.stack.append(self.globals[name])
 
                 elif op == OpCode.STORE_GLOBAL:
@@ -167,29 +167,29 @@ class VM:
                 elif op == OpCode.LOAD_ATTR:
                     obj = self.stack.pop()
                     name = arg
-                    if isinstance(obj, HeliosInstance):
+                    if isinstance(obj, JaonInstance):
                         self.stack.append(obj.get(name))
                     elif isinstance(obj, dict):
                         if name not in obj:
-                            raise HeliosAttributeError(f"Dict has no key '{name}'")
+                            raise JaonAttributeError(f"Dict has no key '{name}'")
                         self.stack.append(obj[name])
                     elif isinstance(obj, str):
                         self.stack.append(self._string_method(obj, name))
                     elif isinstance(obj, list):
                         self.stack.append(self._list_method(obj, name))
                     else:
-                        raise HeliosTypeError(f"Cannot access attribute '{name}' on {type(obj).__name__}")
+                        raise JaonTypeError(f"Cannot access attribute '{name}' on {type(obj).__name__}")
 
                 elif op == OpCode.STORE_ATTR:
                     value = self.stack.pop()
                     obj = self.stack.pop()
                     name = arg
-                    if isinstance(obj, HeliosInstance):
+                    if isinstance(obj, JaonInstance):
                         obj.set(name, value)
                     elif isinstance(obj, dict):
                         obj[name] = value
                     else:
-                        raise HeliosTypeError(f"Cannot set attribute '{name}' on {type(obj).__name__}")
+                        raise JaonTypeError(f"Cannot set attribute '{name}' on {type(obj).__name__}")
                     self.stack.append(value)
 
                 elif op == OpCode.LOAD_INDEX:
@@ -197,22 +197,22 @@ class VM:
                     obj = self.stack.pop()
                     if isinstance(obj, list):
                         if not isinstance(index, int):
-                            raise HeliosTypeError("List index must be integer")
+                            raise JaonTypeError("List index must be integer")
                         if index < 0 or index >= len(obj):
-                            raise HeliosIndexError("List index out of range")
+                            raise JaonIndexError("List index out of range")
                         self.stack.append(obj[index])
                     elif isinstance(obj, dict):
                         if index not in obj:
-                            raise HeliosIndexError(f"Key {index} not found")
+                            raise JaonIndexError(f"Key {index} not found")
                         self.stack.append(obj[index])
                     elif isinstance(obj, str):
                         if not isinstance(index, int):
-                            raise HeliosTypeError("String index must be integer")
+                            raise JaonTypeError("String index must be integer")
                         if index < 0 or index >= len(obj):
-                            raise HeliosIndexError("String index out of range")
+                            raise JaonIndexError("String index out of range")
                         self.stack.append(obj[index])
                     else:
-                        raise HeliosTypeError(f"Cannot index {type(obj).__name__}")
+                        raise JaonTypeError(f"Cannot index {type(obj).__name__}")
 
                 elif op == OpCode.STORE_INDEX:
                     value = self.stack.pop()
@@ -220,14 +220,14 @@ class VM:
                     obj = self.stack.pop()
                     if isinstance(obj, list):
                         if not isinstance(index, int):
-                            raise HeliosTypeError("List index must be integer")
+                            raise JaonTypeError("List index must be integer")
                         if index < 0 or index >= len(obj):
-                            raise HeliosIndexError("List index out of range")
+                            raise JaonIndexError("List index out of range")
                         obj[index] = value
                     elif isinstance(obj, dict):
                         obj[index] = value
                     else:
-                        raise HeliosTypeError(f"Cannot index {type(obj).__name__}")
+                        raise JaonTypeError(f"Cannot index {type(obj).__name__}")
                     self.stack.append(value)
 
                 elif op == OpCode.BUILD_LIST:
@@ -309,7 +309,7 @@ class VM:
                 elif op == OpCode.MAKE_FUNCTION:
                     _, name, param_count = arg
                     code_obj = code.constants[arg[0]]
-                    func = HeliosFunction(code_obj, name, param_count)
+                    func = JaonFunction(code_obj, name, param_count)
                     self.stack.append(func)
 
                 elif op == OpCode.RETURN:
@@ -337,7 +337,7 @@ class VM:
                     class_name = arg
                     cls = self.classes.get(class_name)
                     if cls is None:
-                        raise HeliosRuntimeError(f"Unknown class '{class_name}'")
+                        raise JaonRuntimeError(f"Unknown class '{class_name}'")
                     ctor_method = cls.find_method("constructor")
                     expected_args = ctor_method.param_count - 1 if ctor_method else 0
                     # Stack order is [class, arg1, arg2, ...]
@@ -346,12 +346,12 @@ class VM:
                         args.append(self.stack.pop())
                     args.reverse()
                     self.stack.pop()  # pop class
-                    instance = HeliosInstance(cls)
+                    instance = JaonInstance(cls)
                     # Initialize fields to null
                     for name in cls.fields:
                         instance.fields[name] = None
                     if ctor_method:
-                        self._call(HeliosMethod(instance, ctor_method), args)
+                        self._call(JaonMethod(instance, ctor_method), args)
                         break
                     else:
                         self.stack.append(instance)
@@ -361,8 +361,8 @@ class VM:
                     cls_obj = self.stack.pop()
                     methods = {}
                     for mname, mcode in cls_obj.methods.items():
-                        methods[mname] = HeliosFunction(mcode, mcode.name, mcode.param_count)
-                    cls = HeliosClass(cls_obj, methods)
+                        methods[mname] = JaonFunction(mcode, mcode.name, mcode.param_count)
+                    cls = JaonClass(cls_obj, methods)
                     if base_name and base_name in self.classes:
                         cls.base_class = self.classes[base_name]
                     self.classes[name] = cls
@@ -371,13 +371,13 @@ class VM:
                 elif op == OpCode.LOAD_METHOD:
                     name = arg
                     obj = self.stack[-1]
-                    if isinstance(obj, HeliosInstance):
+                    if isinstance(obj, JaonInstance):
                         method = obj.cls.find_method(name)
                         if method is None:
-                            raise HeliosAttributeError(f"'{obj.cls.name}' has no method '{name}'")
-                        self.stack.append(HeliosMethod(obj, method))
+                            raise JaonAttributeError(f"'{obj.cls.name}' has no method '{name}'")
+                        self.stack.append(JaonMethod(obj, method))
                     else:
-                        raise HeliosTypeError(f"Cannot load method '{name}' on {type(obj).__name__}")
+                        raise JaonTypeError(f"Cannot load method '{name}' on {type(obj).__name__}")
 
                 elif op == OpCode.TRY_BEGIN:
                     catch_offset, finally_offset = arg
@@ -410,7 +410,7 @@ class VM:
 
                 elif op == OpCode.BREAK_LOOP:
                     if not frame.loop_blocks:
-                        raise HeliosRuntimeError("break outside loop")
+                        raise JaonRuntimeError("break outside loop")
                     target, _, depth = frame.loop_blocks[-1]
                     while len(self.stack) > depth:
                         self.stack.pop()
@@ -418,14 +418,14 @@ class VM:
 
                 elif op == OpCode.CONTINUE_LOOP:
                     if not frame.loop_blocks:
-                        raise HeliosRuntimeError("continue outside loop")
+                        raise JaonRuntimeError("continue outside loop")
                     _, target, depth = frame.loop_blocks[-1]
                     while len(self.stack) > depth:
                         self.stack.pop()
                     frame.ip = target
 
                 else:
-                    raise HeliosRuntimeError(f"Unknown opcode {op}")
+                    raise JaonRuntimeError(f"Unknown opcode {op}")
 
             else:
                 # Frame finished naturally
@@ -436,19 +436,19 @@ class VM:
         return None
 
     def _call(self, callee: Any, args: List[Any]) -> None:
-        if isinstance(callee, HeliosFunction):
+        if isinstance(callee, JaonFunction):
             if len(args) != callee.param_count:
-                raise HeliosTypeError(
+                raise JaonTypeError(
                     f"{callee.name} expects {callee.param_count} arguments, got {len(args)}"
                 )
             locals_list = [None] * len(callee.code.locals)
             for i, arg in enumerate(args):
                 locals_list[i] = arg
             self.frames.append(CallFrame(callee.code, locals_list))
-        elif isinstance(callee, HeliosMethod):
+        elif isinstance(callee, JaonMethod):
             func = callee.func
             if len(args) + 1 != func.param_count:
-                raise HeliosTypeError(
+                raise JaonTypeError(
                     f"{func.name} expects {func.param_count} arguments, got {len(args) + 1}"
                 )
             locals_list = [None] * len(func.code.locals)
@@ -460,7 +460,7 @@ class VM:
             result = callee(*args)
             self.stack.append(result)
         else:
-            raise HeliosTypeError(f"Cannot call {type(callee).__name__}")
+            raise JaonTypeError(f"Cannot call {type(callee).__name__}")
 
     def _handle_exception(self, frame: CallFrame, value: Any) -> None:
         while self.frames:
@@ -473,7 +473,7 @@ class VM:
                 frame.ip = catch_ip
                 return
             self.frames.pop()
-        raise HeliosRuntimeError(f"Uncaught exception: {value}")
+        raise JaonRuntimeError(f"Uncaught exception: {value}")
 
     def _binary_op(self, op: str, left: Any, right: Any) -> Any:
         if op == "+":
@@ -488,14 +488,14 @@ class VM:
             return left / right
         if op == "%":
             return left % right
-        raise HeliosRuntimeError(f"Unknown binary operator {op}")
+        raise JaonRuntimeError(f"Unknown binary operator {op}")
 
     def _unary_op(self, op: str, operand: Any) -> Any:
         if op == "-":
             return -operand
         if op == "not":
             return not self._truthy(operand)
-        raise HeliosRuntimeError(f"Unknown unary operator {op}")
+        raise JaonRuntimeError(f"Unknown unary operator {op}")
 
     def _compare_op(self, op: str, left: Any, right: Any) -> bool:
         if op == "==":
@@ -510,7 +510,7 @@ class VM:
             return left <= right
         if op == ">=":
             return left >= right
-        raise HeliosRuntimeError(f"Unknown comparison operator {op}")
+        raise JaonRuntimeError(f"Unknown comparison operator {op}")
 
     def _truthy(self, value: Any) -> bool:
         if value is None:
@@ -533,7 +533,7 @@ class VM:
         }
         if name in methods:
             return methods[name]
-        raise HeliosAttributeError(f"String has no method '{name}'")
+        raise JaonAttributeError(f"String has no method '{name}'")
 
     def _list_method(self, lst: list, name: str) -> Any:
         methods = {
@@ -544,7 +544,7 @@ class VM:
         }
         if name in methods:
             return methods[name]
-        raise HeliosAttributeError(f"List has no method '{name}'")
+        raise JaonAttributeError(f"List has no method '{name}'")
 
 
 def execute(module_code: CodeObject) -> Any:

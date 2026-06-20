@@ -1,7 +1,7 @@
 语法分析器
 ==========
 
-``helios/parser.py`` 使用递归下降算法将 Token 流解析为抽象语法树（AST）。
+``jaon/parser.py`` 使用递归下降算法将 Token 流解析为抽象语法树（AST）。
 
 支持的语法结构
 --------------
@@ -19,10 +19,10 @@
 
 .. code-block:: python
 
-    from helios.lexer import tokenize
-    from helios.parser import parse
+    from jaon.lexer import tokenize
+    from jaon.parser import parse
 
     tokens = tokenize('fun add(a: Int, b: Int): Int { return a + b; }')
     program = parse(tokens)
 
-AST 节点定义位于 ``helios/ast_nodes.py``。
+AST 节点定义位于 ``jaon/ast_nodes.py``。

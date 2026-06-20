@@ -1,19 +1,19 @@
 安装与部署
 ==========
 
-Helios 支持多种使用方式：从源码安装、通过 pip 安装、使用独立可执行文件，
-以及通过 Windows 安装程序关联 ``.helios`` 文件。
+Jaon 支持多种使用方式：从源码安装、通过 pip 安装、使用独立可执行文件，
+以及通过 Windows 安装程序关联 ``.jaon`` 文件。
 
 从源码安装
 ----------
 
 .. code-block:: bash
 
-    git clone https://github.com/ExploreMaths/Helios.git
-    cd helios
+    git clone https://github.com/ExploreMaths/Jaon.git
+    cd jaon
     pip install -e .
 
-安装完成后即可使用 ``python -m helios`` 或 ``helios`` 命令。
+安装完成后即可使用 ``python -m jaon`` 或 ``jaon`` 命令。
 
 安装开发依赖
 ------------
@@ -35,7 +35,7 @@ Windows 独立可执行文件
 
 生成的 ``dist/compiler.exe`` 不依赖 Python 环境。
 
-Windows 安装程序（双击运行 .helios）
+Windows 安装程序（双击运行 .jaon）
 -------------------------------------
 
 方法一：PowerShell 安装
@@ -50,8 +50,8 @@ Windows 安装程序（双击运行 .helios）
 
 安装后：
 
-- 双击任意 ``.helios`` 文件即可执行
-- 右键菜单出现 "Run with Helios"
+- 双击任意 ``.jaon`` 文件即可执行
+- 右键菜单出现 "Run with Jaon"
 - ``compiler.exe`` 添加到用户 PATH
 
 方法二：Inno Setup 安装包
@@ -65,7 +65,7 @@ Windows 安装程序（双击运行 .helios）
 
        iscc installer/setup.iss
 
-3. 运行生成的 ``dist/Helios-Setup.exe``。
+3. 运行生成的 ``dist/Jaon-Setup.exe``。
 
 卸载
 ----
