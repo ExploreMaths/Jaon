@@ -13,8 +13,8 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'Helios'
 copyright = '2026, Helios Project'
 author = 'Helios Project'
-release = '0.1.0'
-version = '0.1.0'
+release = '0.0.1'
+version = '0.0.1'
 
 # -- General configuration ---------------------------------------------------
 extensions = [

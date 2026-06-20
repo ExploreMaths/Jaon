@@ -2,7 +2,7 @@
 ; Build with: iscc installer/setup.iss
 
 #define MyAppName "Helios"
-#define MyAppVersion "0.1.0"
+#define MyAppVersion "0.0.1"
 #define MyAppPublisher "Helios Project"
 #define MyAppURL "https://github.com/ExploreMaths/Helios"
 
@@ -37,7 +37,7 @@ Name: "chinesesimplified"; MessagesFile: "compiler:Languages\\ChineseSimplified.
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: "installvscodeext"; Description: "Install VS Code extension for .helios files"; GroupDescription: "Editor integration:"; Flags: checked
+Name: "installvscodeext"; Description: "Install VS Code extension for .helios files"; GroupDescription: "Editor integration:"
 
 [Files]
 Source: "..\dist\compiler.exe"; DestDir: "{app}\bin"; Flags: ignoreversion

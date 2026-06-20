@@ -27,6 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nuitka 构建独立 `compiler.exe`
 - GitHub Actions CI/CD 工作流
 
-## [0.1.0] - 2026-06-20
+## [0.0.1] - 2026-06-20
 
-- 项目初始发布
+- 项目初始发布（pre-release）

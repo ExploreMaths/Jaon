@@ -2,7 +2,7 @@
   "name": "helios-lang",
   "displayName": "Helios Language Support",
   "description": "Syntax highlighting and run button for the Helios programming language.",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "publisher": "exploremaths",
   "license": "MIT",
   "repository": {
