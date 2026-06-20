@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.11]
+
+- Redesign logo: keep Java's three S-shaped lines, color them in Python blue/yellow, remove outer circle.
+
 ## [0.0.10]
 
 - Add syntax highlighting for general variable identifiers (`variable.other.readwrite.jaon`).

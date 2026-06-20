@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.11] - 2026-06-20
+
+- 重新设计 Logo：保留 Java 图标三条 S 形线，改用 Python 蓝黄配色，去掉外圈圆盘
+- 同步更新所有 Logo 资源、VS Code 文件图标、`dist/compiler.exe` 嵌入图标及文档说明
+
 ## [0.0.10] - 2026-06-20
 
 - VS Code 扩展语法高亮为普通变量标识符添加颜色（`variable.other.readwrite.jaon`）

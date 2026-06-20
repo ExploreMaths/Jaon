@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate the Jaon logo in modern geometric style."""
+"""Generate the Jaon logo: Java's three S-lines in Python blue/yellow colors."""
 import io
 import math
 import struct
@@ -8,13 +8,13 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 
-# Modern tech palette
+# Python official palette + complementary dark background
 COLORS = {
-    "deep_space": "#0B0F19",
-    "indigo": "#1E1B4B",
-    "violet": "#6366F1",
-    "cyan": "#06B6D4",
-    "gold": "#F59E0B",
+    "python_blue": "#3776AB",
+    "python_yellow": "#FFD43B",
+    "deep_space": "#0D1117",
+    "disk_dark": "#13253D",
+    "disk_light": "#1E3A5F",
     "white": "#F8FAFC",
     "muted": "#94A3B8",
 }
@@ -42,46 +42,60 @@ def radial_gradient(draw, center, radius, inner, outer):
         draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=color)
 
 
-def draw_nested_squares(draw, center, radius, color):
-    """Draw a minimal mark of three nested rounded squares + a dot."""
+def bezier_point(t, p0, p1, p2, p3):
+    """Cubic Bézier point at parameter t."""
+    u = 1 - t
+    return (
+        u**3 * p0[0] + 3 * u**2 * t * p1[0] + 3 * u * t**2 * p2[0] + t**3 * p3[0],
+        u**3 * p0[1] + 3 * u**2 * t * p1[1] + 3 * u * t**2 * p2[1] + t**3 * p3[1],
+    )
+
+
+def draw_s_curve(draw, p0, p1, p2, p3, color, max_width, steps=200):
+    """Draw a thick, tapered S-shaped Bézier curve."""
+    points = [bezier_point(t / steps, p0, p1, p2, p3) for t in range(steps + 1)]
+    n = len(points)
+    for i, (x, y) in enumerate(points):
+        # Taper at both ends, thickest in the middle
+        t = i / (n - 1) if n > 1 else 0
+        width_factor = math.sin(t * math.pi)
+        r = max_width * 0.5 * width_factor
+        if r < 0.5:
+            continue
+        draw.ellipse([x - r, y - r, x + r, y + r], fill=color)
+
+
+def draw_jaon_mark(draw, center, radius):
+    """Draw three Java-style S-lines in Python blue/yellow."""
     cx, cy = center
+    scale = radius / 100.0
 
-    # Outer rounded square outline
-    outer = radius * 0.80
-    draw.rounded_rectangle(
-        [cx - outer, cy - outer, cx + outer, cy + outer],
-        radius=outer * 0.30,
-        outline=color,
-        width=max(2, int(radius * 0.08)),
-    )
+    # Three S-curves: left blue, middle yellow, right blue
+    curves = [
+        ((cx - 38 * scale, cy + 42 * scale),
+         (cx - 62 * scale, cy + 12 * scale),
+         (cx - 10 * scale, cy - 18 * scale),
+         (cx - 34 * scale, cy - 48 * scale),
+         COLORS["python_blue"]),
+        ((cx, cy + 52 * scale),
+         (cx - 24 * scale, cy + 22 * scale),
+         (cx + 24 * scale, cy - 8 * scale),
+         (cx, cy - 38 * scale),
+         COLORS["python_yellow"]),
+        ((cx + 38 * scale, cy + 42 * scale),
+         (cx + 14 * scale, cy + 12 * scale),
+         (cx + 62 * scale, cy - 18 * scale),
+         (cx + 34 * scale, cy - 48 * scale),
+         COLORS["python_blue"]),
+    ]
 
-    # Middle rounded square outline
-    middle = radius * 0.52
-    draw.rounded_rectangle(
-        [cx - middle, cy - middle, cx + middle, cy + middle],
-        radius=middle * 0.30,
-        outline=color,
-        width=max(2, int(radius * 0.07)),
-    )
-
-    # Inner solid rounded square
-    inner = radius * 0.28
-    draw.rounded_rectangle(
-        [cx - inner, cy - inner, cx + inner, cy + inner],
-        radius=inner * 0.30,
-        fill=color,
-    )
-
-    # Central dot
-    dot_r = radius * 0.10
-    draw.ellipse(
-        [cx - dot_r, cy - dot_r, cx + dot_r, cy + dot_r],
-        fill=hex_to_rgba(COLORS["indigo"]),
-    )
+    max_width = max(6, int(radius * 0.18))
+    for p0, p1, p2, p3, color in curves:
+        draw_s_curve(draw, p0, p1, p2, p3, hex_to_rgba(color), max_width)
 
 
 def create_logo(size: int) -> Image.Image:
-    """Create the modern Jaon logo."""
+    """Create the Jaon logo: three S-lines only, filling the canvas."""
     scale = 4
     big = size * scale
     img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
@@ -89,29 +103,8 @@ def create_logo(size: int) -> Image.Image:
 
     cx = cy = big // 2
 
-    # Main disk
-    disk_r = int(big * 0.34)
-    radial_gradient(
-        draw,
-        (cx, cy),
-        disk_r,
-        hex_to_rgba(COLORS["indigo"]),
-        blend_rgba(hex_to_rgba(COLORS["violet"]), (0, 0, 0, 255), 0.55),
-    )
-
-    # Inner glow
-    glow_r = int(big * 0.18)
-    radial_gradient(
-        draw,
-        (cx, cy),
-        glow_r,
-        hex_to_rgba(COLORS["violet"], 140),
-        hex_to_rgba(COLORS["indigo"], 0),
-    )
-
-    # Nested squares mark
-    mark_r = int(big * 0.14)
-    draw_nested_squares(draw, (cx, cy), mark_r, hex_to_rgba(COLORS["white"], 245))
+    # Three S-lines mark, large and centered
+    draw_jaon_mark(draw, (cx, cy), int(big * 0.42))
 
     # Downscale
     if size != big:
