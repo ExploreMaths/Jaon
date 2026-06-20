@@ -25,9 +25,15 @@ SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=admin
 
+; Use ISPP to include Chinese only when the language file is present (e.g. local builds).
+; CI runners usually only have the Default English language installed.
+#define ChineseIslPath "C:\\Program Files (x86)\\Inno Setup 6\\Languages\\ChineseSimplified.isl"
+
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
+#if FileExists(ChineseIslPath)
 Name: "chinesesimplified"; MessagesFile: "compiler:Languages\\ChineseSimplified.isl"
+#endif
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
