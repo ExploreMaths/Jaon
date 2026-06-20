@@ -69,6 +69,7 @@ jobs:
             dist/Helios-Setup.exe
             dist/helios-lang-*.vsix
           generate_release_notes: true
+          prerelease: true
 
   docs:
     runs-on: ubuntu-latest
