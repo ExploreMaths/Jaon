@@ -19,6 +19,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -28,6 +33,15 @@ jobs:
       - name: Build compiler.exe
         run: |
           python scripts/build_exe.py
+
+      - name: Build VS Code extension
+        run: |
+          cd editors/vscode
+          npm install
+          npm run compile
+          npx @vscode/vsce package
+          Copy-Item helios-lang-*.vsix ..\..\dist\
+          cd ..\..
 
       - name: Install Inno Setup
         run: |
@@ -44,6 +58,7 @@ jobs:
           path: |
             dist/compiler.exe
             dist/Helios-Setup.exe
+            dist/helios-lang-*.vsix
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -52,6 +67,7 @@ jobs:
           files: |
             dist/compiler.exe
             dist/Helios-Setup.exe
+            dist/helios-lang-*.vsix
           generate_release_notes: true
 
   docs:

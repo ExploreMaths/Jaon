@@ -37,6 +37,7 @@ Name: "chinesesimplified"; MessagesFile: "compiler:Languages\\ChineseSimplified.
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "installvscodeext"; Description: "Install VS Code extension for .helios files"; GroupDescription: "Editor integration:"; Flags: checked
 
 [Files]
 Source: "..\dist\compiler.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
@@ -44,6 +45,7 @@ Source: "helios-file.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\examples\*"; DestDir: "{app}\examples"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\editors\vscode\helios-lang-*.vsix"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\bin\compiler.exe"; Parameters: "repl"; IconFilename: "{app}\helios-file.ico"
@@ -61,6 +63,10 @@ Root: HKLM; Subkey: "Software\\Classes\\HeliosSourceFile\\shell\\RunWithHelios\\
 
 [Run]
 Filename: "{app}\\bin\\compiler.exe"; Parameters: "run ""{app}\\examples\\hello.helios"""; Description: "Test Helios installation"; Flags: nowait postinstall skipifsilent
+Filename: "cmd.exe"; Parameters: "/c code --install-extension ""{app}\\helios-lang-{#MyAppVersion}.vsix"""; Description: "Install VS Code extension"; Flags: postinstall skipifsilent; Tasks: installvscodeext
+
+[UninstallRun]
+Filename: "cmd.exe"; Parameters: "/c code --uninstall-extension exploremaths.helios-lang"; RunOnceId: "UninstallHeliosVSCodeExt"
 
 [Code]
 procedure CurStepChanged(CurStep: TSetupStep);

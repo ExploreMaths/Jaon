@@ -5,6 +5,10 @@
   "version": "0.1.0",
   "publisher": "exploremaths",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ExploreMaths/Helios.git"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },

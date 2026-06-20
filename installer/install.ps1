@@ -94,6 +94,20 @@ Set-ItemProperty -Path $uninstallPath -Name "DisplayIcon" -Value $iconPath
 Set-ItemProperty -Path $uninstallPath -Name "Publisher" -Value "Helios Project"
 Set-ItemProperty -Path $uninstallPath -Name "Version" -Value "0.1.0"
 
+# Install VS Code extension if VS Code is present and a .vsix package exists
+$vsixPath = Join-Path $rootDir "dist\helios-lang-0.1.0.vsix"
+if (Get-Command code -ErrorAction SilentlyContinue) {
+    if (Test-Path $vsixPath) {
+        Write-Host "Installing VS Code extension..." -ForegroundColor Cyan
+        code --install-extension $vsixPath | Out-Null
+        Write-Host "VS Code extension installed." -ForegroundColor Green
+    } else {
+        Write-Host "VS Code extension package not found at $vsixPath, skipping." -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "VS Code not detected, skipping extension installation." -ForegroundColor Yellow
+}
+
 # Refresh icon cache
 Write-Host "Refreshing icon cache..." -ForegroundColor Cyan
 ie4uinit.exe -show | Out-Null

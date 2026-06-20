@@ -41,6 +41,13 @@ if (Test-Path $installDir) {
     Write-Host "Removed $installDir" -ForegroundColor Green
 }
 
+# Uninstall VS Code extension if VS Code is present
+if (Get-Command code -ErrorAction SilentlyContinue) {
+    Write-Host "Uninstalling VS Code extension..." -ForegroundColor Cyan
+    code --uninstall-extension exploremaths.helios-lang | Out-Null
+    Write-Host "VS Code extension uninstalled." -ForegroundColor Green
+}
+
 # Refresh icon cache
 ie4uinit.exe -show | Out-Null
 
