@@ -43,6 +43,7 @@ Source: "..\dist\compiler.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "helios-file.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\examples\*"; DestDir: "{app}\examples"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\bin\compiler.exe"; Parameters: "repl"; IconFilename: "{app}\helios-file.ico"
@@ -59,7 +60,7 @@ Root: HKLM; Subkey: "Software\\Classes\\HeliosSourceFile\\shell\\RunWithHelios";
 Root: HKLM; Subkey: "Software\\Classes\\HeliosSourceFile\\shell\\RunWithHelios\\command"; ValueType: string; ValueName: ""; ValueData: """{app}\\bin\\compiler.exe"" run ""%1"""
 
 [Run]
-Filename: "{app}\\bin\\compiler.exe"; Parameters: "run ""{app}\\..\\examples\\hello.helios"""; Description: "Test Helios installation"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\\bin\\compiler.exe"; Parameters: "run ""{app}\\examples\\hello.helios"""; Description: "Test Helios installation"; Flags: nowait postinstall skipifsilent
 
 [Code]
 procedure CurStepChanged(CurStep: TSetupStep);
