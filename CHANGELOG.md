@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-21
+
+- VS Code 扩展新增定义跳转（Go to Definition）
+- VS Code 扩展新增静态检查诊断，使用 `jaon check` 在编辑器中显示红色/黄色波浪线
+- VS Code 扩展新增语义高亮，函数与类引用使用对应颜色
+- VS Code 扩展改进内建函数悬停文档格式，包含函数签名与示例代码块
+- 修复 `fun` 定义的函数名语法高亮
+
 ## [0.1.1] - 2026-06-20
 
 - VS Code 扩展新增 Jaon 语言自动补全（关键字、类型、内建函数、常用方法、代码片段）

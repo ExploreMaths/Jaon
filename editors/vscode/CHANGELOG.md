@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.1.2]
+
+- Add Go to Definition for variables, functions, classes, fields, and methods.
+- Add diagnostics (red/yellow wavy underlines) using `jaon check`.
+- Add semantic highlighting so function and class references match their definitions.
+- Improve built-in function hover docs with function signature and example block.
+- Fix function name coloring in `fun` definitions.
+
 ## [0.1.1]
 
 - Add IntelliSense auto-completion for Jaon keywords, types, built-in functions, common methods, and snippets.

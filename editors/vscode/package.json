@@ -2,7 +2,7 @@
   "name": "jaon-lang",
   "displayName": "Jaon Language Support",
   "description": "Syntax highlighting and run button for the Jaon programming language.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "exploremaths",
   "license": "MIT",
   "repository": {
