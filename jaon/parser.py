@@ -383,7 +383,12 @@ class Parser:
     def comparison(self) -> ast.ASTNode:
         left = self.term()
         while True:
-            tok = self.match(TokenType.LT) or self.match(TokenType.GT) or self.match(TokenType.LE) or self.match(TokenType.GE)
+            tok = (
+                self.match(TokenType.LT)
+                or self.match(TokenType.GT)
+                or self.match(TokenType.LE)
+                or self.match(TokenType.GE)
+            )
             if not tok:
                 break
             right = self.term()
