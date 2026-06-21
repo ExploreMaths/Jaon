@@ -119,6 +119,7 @@ class Analyzer:
         self.current_function_return: Optional[Type] = None
         self.in_loop = False
         self.classes: Dict[str, ClassInfo] = {}
+        self.current_node: Optional[ast.ASTNode] = None
         self._init_builtins()
 
     def _init_builtins(self) -> None:
@@ -135,7 +136,10 @@ class Analyzer:
         self.global_scope.define("float", FunctionType([ANY], FLOAT))
         self.global_scope.define("type", FunctionType([ANY], STRING))
 
-    def error(self, message: str) -> None:
+    def error(self, message: str, node: ast.ASTNode = None) -> None:
+        loc = node or self.current_node
+        if loc and loc.line:
+            raise JaonTypeError(f"{message} at line {loc.line}, column {loc.column}")
         raise JaonTypeError(message)
 
     def resolve_type(self, node: ast.TypeNode) -> Type:
@@ -148,7 +152,7 @@ class Analyzer:
                 resolved_params = [self.resolve_type(p) for p in node.params]
                 return Type(name, resolved_params)
             return t
-        self.error(f"Unknown type '{name}'")
+        self.error(f"Unknown type '{name}'", node)
 
     def analyze(self, program: ast.Program) -> None:
         # First pass: register class skeletons and function signatures
@@ -197,6 +201,7 @@ class Analyzer:
         self.global_scope.define(node.name, FunctionType(param_types, return_type))
 
     def analyze_statement(self, node: ast.ASTNode) -> None:
+        self.current_node = node
         if isinstance(node, ast.VarDecl):
             init_type = self.analyze_expr(node.initializer)
             if node.var_type:
@@ -356,6 +361,7 @@ class Analyzer:
         self.current_function_return = prev_return
 
     def analyze_expr(self, node: ast.ASTNode) -> Type:
+        self.current_node = node
         if isinstance(node, ast.IntegerLiteral):
             return INT
         if isinstance(node, ast.FloatLiteral):

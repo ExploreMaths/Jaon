@@ -16,6 +16,9 @@
       "include": "#numbers"
     },
     {
+      "include": "#function-definitions"
+    },
+    {
       "include": "#keywords"
     },
     {
@@ -23,6 +26,9 @@
     },
     {
       "include": "#constants"
+    },
+    {
+      "include": "#builtin-functions"
     },
     {
       "include": "#functions"
@@ -133,11 +139,34 @@
         }
       ]
     },
+    "builtin-functions": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.jaon",
+          "match": "\\b(print|println|input|len|range|str|int|float|type)\\b"
+        }
+      ]
+    },
     "identifiers": {
       "patterns": [
         {
           "name": "variable.other.readwrite.jaon",
           "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "function-definitions": {
+      "patterns": [
+        {
+          "match": "\\b(fun)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "keyword.declaration.jaon"
+            },
+            "2": {
+              "name": "entity.name.function.jaon"
+            }
+          }
         }
       ]
     },

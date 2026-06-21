@@ -207,64 +207,64 @@ export const JAON_BUILTINS: JaonLanguageItem[] = [
     {
         name: 'print',
         kind: vscode.CompletionItemKind.Function,
-        detail: '输出（不换行）',
-        documentation: '将内容输出到控制台，不带换行符。\n\n示例：`print("Hello");`',
+        detail: 'fun print(value: Any): Void',
+        documentation: '将 value 输出到标准输出（控制台）。不会在末尾添加换行符。value 可以是任意类型。\n\nExample\n-------\n```jaon\nprint("Hello");\n```',
         insertText: 'print(${1:value})',
     },
     {
         name: 'println',
         kind: vscode.CompletionItemKind.Function,
-        detail: '输出（换行）',
-        documentation: '将内容输出到控制台，末尾带换行符。\n\n示例：`println("Hello, Jaon!");`',
+        detail: 'fun println(value: Any): Void',
+        documentation: '将 value 输出到标准输出（控制台），并在末尾添加换行符。value 可以是任意类型。\n\nExample\n-------\n```jaon\nprintln("Hello, Jaon!");\n```',
         insertText: 'println(${1:value})',
     },
     {
         name: 'input',
         kind: vscode.CompletionItemKind.Function,
-        detail: '读取输入',
-        documentation: '从标准输入读取一行字符串。\n\n示例：`var name = input();`',
+        detail: 'fun input(): String',
+        documentation: '从标准输入读取一行文本，返回去掉末尾换行符的字符串。\n\nExample\n-------\n```jaon\nvar name = input();\n```',
         insertText: 'input()',
     },
     {
         name: 'len',
         kind: vscode.CompletionItemKind.Function,
-        detail: '获取长度',
-        documentation: '返回字符串、列表或字典的长度。\n\n示例：`len("abc")`、`len([1, 2, 3])`',
+        detail: 'fun len(collection: Any): Int',
+        documentation: '返回 container 的长度。对于字符串返回字符数，对于列表或字典返回元素个数。\n\nExample\n-------\n```jaon\nlen("abc");\nlen([1, 2, 3]);\n```',
         insertText: 'len(${1:collection})',
     },
     {
         name: 'range',
         kind: vscode.CompletionItemKind.Function,
-        detail: '生成整数序列',
-        documentation: '生成从 0 到 n-1 的整数序列。\n\n示例：`for (i in range(5)) { ... }`',
+        detail: 'fun range(n: Int): List<Int>',
+        documentation: '返回一个从 0 开始、到 n 结束（不包含 n）的整数序列。常用于 for 循环。\n\nExample\n-------\n```jaon\nfor (i in range(5)) {\n    println(i);\n}\n```',
         insertText: 'range(${1:n})',
     },
     {
         name: 'str',
         kind: vscode.CompletionItemKind.Function,
-        detail: '转为字符串',
-        documentation: '将值转换为字符串。\n\n示例：`str(42)`',
+        detail: 'fun str(value: Any): String',
+        documentation: '将 value 转换为字符串类型并返回。\n\nExample\n-------\n```jaon\nstr(42);\n```',
         insertText: 'str(${1:value})',
     },
     {
         name: 'int',
         kind: vscode.CompletionItemKind.Function,
-        detail: '转为整数',
-        documentation: '将值转换为整数。\n\n示例：`int("42")`',
+        detail: 'fun int(value: Any): Int',
+        documentation: '将 value 转换为整数类型并返回。如果 value 无法转换为整数，则抛出异常。\n\nExample\n-------\n```jaon\nint("42");\n```',
         insertText: 'int(${1:value})',
     },
     {
         name: 'float',
         kind: vscode.CompletionItemKind.Function,
-        detail: '转为浮点数',
-        documentation: '将值转换为浮点数。\n\n示例：`float("3.14")`',
+        detail: 'fun float(value: Any): Float',
+        documentation: '将 value 转换为浮点数类型并返回。如果 value 无法转换为浮点数，则抛出异常。\n\nExample\n-------\n```jaon\nfloat("3.14");\n```',
         insertText: 'float(${1:value})',
     },
     {
         name: 'type',
         kind: vscode.CompletionItemKind.Function,
-        detail: '获取类型',
-        documentation: '返回值的类型名称。\n\n示例：`type(42)`',
+        detail: 'fun type(value: Any): String',
+        documentation: '返回 value 的类型名称字符串。\n\nExample\n-------\n```jaon\ntype(42);\n```',
         insertText: 'type(${1:value})',
     },
 ];
@@ -321,6 +321,8 @@ const ALL_ITEMS: JaonLanguageItem[] = [
     ...JAON_SNIPPETS,
 ];
 
+import { JaonSymbolTable, buildSymbolTable, JaonSymbol, FunctionSymbol, ClassSymbol } from './symbols';
+
 function toCompletionItem(item: JaonLanguageItem): vscode.CompletionItem {
     const completion = new vscode.CompletionItem(item.name, item.kind);
     completion.detail = item.detail;
@@ -331,40 +333,33 @@ function toCompletionItem(item: JaonLanguageItem): vscode.CompletionItem {
     return completion;
 }
 
+function symbolToCompletionItem(sym: JaonSymbol): vscode.CompletionItem {
+    const kindMap: Record<string, vscode.CompletionItemKind> = {
+        variable: vscode.CompletionItemKind.Variable,
+        function: vscode.CompletionItemKind.Function,
+        class: vscode.CompletionItemKind.Class,
+        field: vscode.CompletionItemKind.Field,
+        method: vscode.CompletionItemKind.Method,
+        parameter: vscode.CompletionItemKind.Variable,
+        builtin: vscode.CompletionItemKind.Function,
+        type: vscode.CompletionItemKind.TypeParameter,
+        keyword: vscode.CompletionItemKind.Keyword,
+    };
+    const completion = new vscode.CompletionItem(sym.name, kindMap[sym.kind] || vscode.CompletionItemKind.Text);
+    completion.detail = sym.detail || `${sym.kind}: ${sym.name}${sym.type ? ': ' + sym.type : ''}`;
+    if (sym.documentation) {
+        completion.documentation = new vscode.MarkdownString(sym.documentation);
+    }
+    return completion;
+}
+
 function findItem(word: string): JaonLanguageItem | undefined {
     return ALL_ITEMS.find(
         (item) => item.name.toLowerCase() === word.toLowerCase()
     );
 }
 
-export function createCompletionProvider(): vscode.CompletionItemProvider {
-    return {
-        provideCompletionItems(
-            document: vscode.TextDocument,
-            position: vscode.Position,
-            _token: vscode.CancellationToken,
-            context: vscode.CompletionContext
-        ): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
-            if (document.languageId !== 'jaon') {
-                return [];
-            }
-
-            const items = ALL_ITEMS.map(toCompletionItem);
-
-            // Provide method completions after dot.
-            const lineText = document.lineAt(position).text.substring(0, position.character);
-            const dotMatch = /(\w+)\.$/.exec(lineText);
-            if (dotMatch) {
-                const objectName = dotMatch[1];
-                return buildMethodCompletions(objectName);
-            }
-
-            return items;
-        },
-    };
-}
-
-function buildMethodCompletions(objectName: string): vscode.CompletionItem[] {
+function findBuiltInMethod(receiverType: string, memberName: string): JaonLanguageItem | undefined {
     const methods: Record<string, JaonLanguageItem[]> = {
         String: [
             { name: 'length', kind: vscode.CompletionItemKind.Method, detail: '字符串长度', documentation: '返回字符串长度。' },
@@ -398,9 +393,174 @@ function buildMethodCompletions(objectName: string): vscode.CompletionItem[] {
         ],
     };
 
-    const key = objectName.charAt(0).toUpperCase() + objectName.slice(1).toLowerCase();
-    const list = methods[key] || methods[objectName] || [];
+    const key = receiverType.charAt(0).toUpperCase() + receiverType.slice(1).toLowerCase();
+    const list = methods[key] || methods[receiverType] || [];
+    return list.find(m => m.name === memberName);
+}
+
+function buildBuiltInMethodCompletions(receiverType: string): vscode.CompletionItem[] {
+    const methods: Record<string, JaonLanguageItem[]> = {
+        String: [
+            { name: 'length', kind: vscode.CompletionItemKind.Method, detail: '字符串长度', documentation: '返回字符串长度。' },
+            { name: 'contains', kind: vscode.CompletionItemKind.Method, detail: '是否包含子串', documentation: '返回是否包含指定子串。' },
+            { name: 'startsWith', kind: vscode.CompletionItemKind.Method, detail: '是否以某前缀开头', documentation: '返回是否以指定前缀开头。' },
+            { name: 'endsWith', kind: vscode.CompletionItemKind.Method, detail: '是否以某后缀结尾', documentation: '返回是否以指定后缀结尾。' },
+            { name: 'substring', kind: vscode.CompletionItemKind.Method, detail: '截取子串', documentation: '截取从 start 开始、长度为 length 的子串。' },
+            { name: 'indexOf', kind: vscode.CompletionItemKind.Method, detail: '查找子串位置', documentation: '返回子串第一次出现的位置，未找到返回 -1。' },
+            { name: 'split', kind: vscode.CompletionItemKind.Method, detail: '分割字符串', documentation: '按分隔符分割字符串并返回列表。' },
+            { name: 'trim', kind: vscode.CompletionItemKind.Method, detail: '去除两端空白', documentation: '返回去除首尾空白后的字符串。' },
+            { name: 'toUpper', kind: vscode.CompletionItemKind.Method, detail: '转为大写', documentation: '返回全大写字符串。' },
+            { name: 'toLower', kind: vscode.CompletionItemKind.Method, detail: '转为小写', documentation: '返回全小写字符串。' },
+        ],
+        List: [
+            { name: 'length', kind: vscode.CompletionItemKind.Method, detail: '列表长度', documentation: '返回列表元素个数。' },
+            { name: 'append', kind: vscode.CompletionItemKind.Method, detail: '追加元素', documentation: '在列表末尾追加元素。' },
+            { name: 'pop', kind: vscode.CompletionItemKind.Method, detail: '移除并返回末尾元素', documentation: '移除并返回列表最后一个元素。' },
+            { name: 'contains', kind: vscode.CompletionItemKind.Method, detail: '是否包含元素', documentation: '返回列表是否包含指定元素。' },
+            { name: 'indexOf', kind: vscode.CompletionItemKind.Method, detail: '查找元素位置', documentation: '返回元素第一次出现的位置，未找到返回 -1。' },
+            { name: 'sort', kind: vscode.CompletionItemKind.Method, detail: '排序', documentation: '对列表进行原地排序。' },
+            { name: 'reverse', kind: vscode.CompletionItemKind.Method, detail: '反转', documentation: '原地反转列表。' },
+            { name: 'clear', kind: vscode.CompletionItemKind.Method, detail: '清空列表', documentation: '清空列表所有元素。' },
+        ],
+        Dict: [
+            { name: 'length', kind: vscode.CompletionItemKind.Method, detail: '字典键值对数量', documentation: '返回字典键值对数量。' },
+            { name: 'containsKey', kind: vscode.CompletionItemKind.Method, detail: '是否包含键', documentation: '返回字典是否包含指定键。' },
+            { name: 'keys', kind: vscode.CompletionItemKind.Method, detail: '所有键', documentation: '返回包含所有键的列表。' },
+            { name: 'values', kind: vscode.CompletionItemKind.Method, detail: '所有值', documentation: '返回包含所有值的列表。' },
+            { name: 'remove', kind: vscode.CompletionItemKind.Method, detail: '移除键值对', documentation: '移除指定键对应的键值对。' },
+            { name: 'clear', kind: vscode.CompletionItemKind.Method, detail: '清空字典', documentation: '清空字典所有键值对。' },
+        ],
+    };
+
+    const key = receiverType.charAt(0).toUpperCase() + receiverType.slice(1).toLowerCase();
+    const list = methods[key] || methods[receiverType] || [];
     return list.map(toCompletionItem);
+}
+
+function getWordAtPosition(document: vscode.TextDocument, position: vscode.Position): { word: string; range: vscode.Range } | undefined {
+    const range = document.getWordRangeAtPosition(position, /[A-Za-z_][A-Za-z0-9_]*/);
+    if (!range) {
+        return undefined;
+    }
+    return { word: document.getText(range), range };
+}
+
+function getReceiverAndMember(document: vscode.TextDocument, position: vscode.Position): { receiver: string; memberRange: vscode.Range; member: string } | undefined {
+    const memberRange = document.getWordRangeAtPosition(position, /[A-Za-z_][A-Za-z0-9_]*/);
+    if (!memberRange) {
+        return undefined;
+    }
+    const member = document.getText(memberRange);
+    const line = document.lineAt(position.line).text;
+    const before = line.substring(0, memberRange.start.character);
+    const match = /(\w+)\.\s*$/.exec(before);
+    if (!match) {
+        return undefined;
+    }
+    return { receiver: match[1], memberRange, member };
+}
+
+function isInStringOrComment(document: vscode.TextDocument, position: vscode.Position): boolean {
+    const line = document.lineAt(position.line).text;
+    const textBefore = line.substring(0, position.character);
+
+    // Line comment
+    if (textBefore.includes('//')) {
+        return true;
+    }
+
+    // String literal: count unescaped double quotes before the cursor
+    let inString = false;
+    for (let i = 0; i < textBefore.length; i++) {
+        if (textBefore[i] === '\\') {
+            i++;
+            continue;
+        }
+        if (textBefore[i] === '"') {
+            inString = !inString;
+        }
+    }
+    if (inString) {
+        return true;
+    }
+
+    // Block comment: count /* and */ before position in the whole document
+    const textUpToPosition = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
+    const blockOpenCount = (textUpToPosition.match(/\/\*/g) || []).length;
+    const blockCloseCount = (textUpToPosition.match(/\*\//g) || []).length;
+    return blockOpenCount > blockCloseCount;
+}
+
+function inferReceiverType(document: vscode.TextDocument, table: JaonSymbolTable, receiver: string): string | undefined {
+    // 1. Look for local variable / parameter
+    const sym = table.findSymbol(receiver);
+    if (sym?.type) {
+        return sym.type;
+    }
+
+    // 2. Try to infer from the current line assignment, e.g. var x = new Dog();
+    for (let i = 0; i < document.lineCount; i++) {
+        const line = document.lineAt(i).text;
+        const m = new RegExp(`(?:var|val|public|private|static)?\\s*${receiver}\\s*(?::\\s*(\\w+))?\\s*=\\s*(.+?);?\\s*$`).exec(line);
+        if (m) {
+            if (m[1]) {
+                return m[1];
+            }
+            const init = m[2].trim();
+            const newM = /^new\s+(\w+)/.exec(init);
+            if (newM) {
+                return newM[1];
+            }
+        }
+    }
+
+    return undefined;
+}
+
+export function createCompletionProvider(): vscode.CompletionItemProvider {
+    return {
+        provideCompletionItems(
+            document: vscode.TextDocument,
+            position: vscode.Position,
+            _token: vscode.CancellationToken,
+            _context: vscode.CompletionContext
+        ): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
+            if (document.languageId !== 'jaon') {
+                return [];
+            }
+            if (isInStringOrComment(document, position)) {
+                return [];
+            }
+
+            const table = buildSymbolTable(document);
+
+            // Member access completion: obj.<cursor>
+            const memberInfo = getReceiverAndMember(document, position);
+            if (memberInfo) {
+                const receiverType = inferReceiverType(document, table, memberInfo.receiver);
+                if (receiverType) {
+                    const classSym = table.findClass(receiverType);
+                    const members: vscode.CompletionItem[] = [];
+                    if (classSym) {
+                        members.push(...classSym.fields.map(symbolToCompletionItem));
+                        members.push(...classSym.methods.map(symbolToCompletionItem));
+                    }
+                    members.push(...buildBuiltInMethodCompletions(receiverType));
+                    return members;
+                }
+                return [];
+            }
+
+            const items = ALL_ITEMS.map(toCompletionItem);
+
+            // Add user-defined symbols from the current document
+            const userSymbols = table.getSymbolsAtLine(position.line)
+                .filter(s => !ALL_ITEMS.some(i => i.name === s.name));
+            items.push(...userSymbols.map(symbolToCompletionItem));
+
+            return items;
+        },
+    };
 }
 
 export function createHoverProvider(): vscode.HoverProvider {
@@ -413,22 +573,224 @@ export function createHoverProvider(): vscode.HoverProvider {
             if (document.languageId !== 'jaon') {
                 return;
             }
-
-            const range = document.getWordRangeAtPosition(position, /[A-Za-z_][A-Za-z0-9_]*/);
-            if (!range) {
+            if (isInStringOrComment(document, position)) {
                 return;
             }
 
-            const word = document.getText(range);
+            const table = buildSymbolTable(document);
+
+            // Member access hover: obj.member
+            const memberInfo = getReceiverAndMember(document, position);
+            if (memberInfo) {
+                const receiverType = inferReceiverType(document, table, memberInfo.receiver);
+                if (receiverType) {
+                    let member: JaonSymbol | undefined = table.resolveMember(receiverType, memberInfo.member);
+                    if (!member) {
+                        const builtIn = findBuiltInMethod(receiverType, memberInfo.member);
+                        if (builtIn) {
+                            const contents = new vscode.MarkdownString();
+                            contents.appendCodeblock(`${receiverType}.${builtIn.detail}`, 'jaon');
+                            contents.appendMarkdown(builtIn.documentation);
+                            return new vscode.Hover(contents, memberInfo.memberRange);
+                        }
+                    }
+                    if (member) {
+                        const contents = new vscode.MarkdownString();
+                        contents.appendCodeblock(member.detail || member.name, 'jaon');
+                        if (member.documentation) {
+                            contents.appendMarkdown(member.documentation);
+                        }
+                        return new vscode.Hover(contents, memberInfo.memberRange);
+                    }
+                }
+                return;
+            }
+
+            // Plain identifier hover
+            const wordInfo = getWordAtPosition(document, position);
+            if (!wordInfo) {
+                return;
+            }
+
+            const { word, range } = wordInfo;
+
+            // Built-in keyword / function / type
             const item = findItem(word);
-            if (!item) {
-                return;
+            if (item) {
+                // 关键字保留补全，但不显示悬浮提示
+                if (item.kind === vscode.CompletionItemKind.Keyword) {
+                    return;
+                }
+                const contents = new vscode.MarkdownString();
+                if (item.kind === vscode.CompletionItemKind.Function) {
+                    contents.appendCodeblock(item.detail, 'jaon');
+                } else {
+                    contents.appendCodeblock(item.name, 'jaon');
+                    contents.appendMarkdown(`**${item.detail}**\n\n`);
+                }
+                contents.appendMarkdown(item.documentation);
+                return new vscode.Hover(contents, range);
             }
 
-            const contents = new vscode.MarkdownString();
-            contents.appendCodeblock(item.name, 'jaon');
-            contents.appendMarkdown(`**${item.detail}**\n\n${item.documentation}`);
-            return new vscode.Hover(contents, range);
+            // User-defined symbol
+            const sym = table.findSymbol(word);
+            if (sym) {
+                const contents = new vscode.MarkdownString();
+                contents.appendCodeblock(sym.detail || sym.name, 'jaon');
+                if (sym.documentation) {
+                    contents.appendMarkdown(sym.documentation);
+                }
+                return new vscode.Hover(contents, range);
+            }
+
+            // Fallback: show a generic hover so "everything has something"
+            const fallback = new vscode.MarkdownString();
+            fallback.appendCodeblock(word, 'jaon');
+            return new vscode.Hover(fallback, range);
         },
     };
+}
+
+export function createDefinitionProvider(): vscode.DefinitionProvider {
+    return {
+        provideDefinition(
+            document: vscode.TextDocument,
+            position: vscode.Position,
+            _token: vscode.CancellationToken
+        ): vscode.ProviderResult<vscode.Definition | vscode.LocationLink[]> {
+            if (document.languageId !== 'jaon') {
+                return;
+            }
+            if (isInStringOrComment(document, position)) {
+                return;
+            }
+
+            const table = buildSymbolTable(document);
+
+            // Member access definition: obj.member
+            const memberInfo = getReceiverAndMember(document, position);
+            if (memberInfo) {
+                const receiverType = inferReceiverType(document, table, memberInfo.receiver);
+                if (receiverType) {
+                    const member = table.resolveMember(receiverType, memberInfo.member);
+                    if (member?.range) {
+                        return new vscode.Location(document.uri, member.range);
+                    }
+                }
+                return;
+            }
+
+            const wordInfo = getWordAtPosition(document, position);
+            if (!wordInfo) {
+                return;
+            }
+
+            const sym = table.findSymbol(wordInfo.word);
+            if (sym?.range) {
+                return new vscode.Location(document.uri, sym.range);
+            }
+
+            return;
+        },
+    };
+}
+
+export const SEMANTIC_TOKEN_TYPES = ['function', 'class', 'variable', 'parameter', 'property'];
+export const SEMANTIC_TOKEN_MODIFIERS: string[] = [];
+
+export function createSemanticTokensProvider(legend: vscode.SemanticTokensLegend): vscode.DocumentSemanticTokensProvider {
+    return {
+        provideDocumentSemanticTokens(
+            document: vscode.TextDocument,
+            _token: vscode.CancellationToken
+        ): vscode.ProviderResult<vscode.SemanticTokens> {
+            if (document.languageId !== 'jaon') {
+                return new vscode.SemanticTokens(new Uint32Array(0));
+            }
+
+            const table = buildSymbolTable(document);
+            const functionNames = new Set<string>();
+            const classNames = new Set<string>();
+            const paramNames = new Set<string>();
+
+            for (const sym of table.getSymbolsAtLine(document.lineCount)) {
+                if (sym.kind === 'function' || sym.kind === 'method') {
+                    functionNames.add(sym.name);
+                    if ('params' in sym && Array.isArray((sym as any).params)) {
+                        for (const p of (sym as any).params) {
+                            if (p.name) {
+                                paramNames.add(p.name);
+                            }
+                        }
+                    }
+                } else if (sym.kind === 'class') {
+                    classNames.add(sym.name);
+                } else if (sym.kind === 'parameter') {
+                    paramNames.add(sym.name);
+                }
+            }
+
+            const tokens: number[] = [];
+            const keywordSet = new Set(JAON_KEYWORDS.map(k => k.name));
+            const typeSet = new Set(JAON_TYPES.map(t => t.name));
+            const builtinSet = new Set(JAON_BUILTINS.map(b => b.name));
+
+            for (let line = 0; line < document.lineCount; line++) {
+                const text = document.lineAt(line).text;
+                const regex = /[A-Za-z_][A-Za-z0-9_]*/g;
+                let match: RegExpExecArray | null;
+                while ((match = regex.exec(text)) !== null) {
+                    const word = match[0];
+                    const startChar = match.index;
+
+                    // Skip keywords, types, constants, builtins (already colored by grammar)
+                    if (
+                        keywordSet.has(word) ||
+                        typeSet.has(word) ||
+                        builtinSet.has(word) ||
+                        word === 'true' ||
+                        word === 'false' ||
+                        word === 'null'
+                    ) {
+                        continue;
+                    }
+
+                    // Skip words inside strings or comments
+                    const pos = new vscode.Position(line, startChar);
+                    if (isInStringOrComment(document, pos)) {
+                        continue;
+                    }
+
+                    let tokenType: string | undefined;
+                    if (functionNames.has(word)) {
+                        tokenType = 'function';
+                    } else if (classNames.has(word)) {
+                        tokenType = 'class';
+                    } else if (paramNames.has(word)) {
+                        tokenType = 'parameter';
+                    } else {
+                        tokenType = 'variable';
+                    }
+
+                    if (tokenType) {
+                        const typeIndex = SEMANTIC_TOKEN_TYPES.indexOf(tokenType);
+                        pushToken(tokens, line, startChar, word.length, typeIndex, 0);
+                    }
+                }
+            }
+
+            return new vscode.SemanticTokens(new Uint32Array(tokens));
+        },
+    };
+}
+
+function pushToken(
+    tokens: number[],
+    line: number,
+    char: number,
+    length: number,
+    tokenType: number,
+    tokenModifiers: number
+): void {
+    tokens.push(line, char, length, tokenType, tokenModifiers);
 }

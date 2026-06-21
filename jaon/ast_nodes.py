@@ -6,7 +6,8 @@ from typing import List, Optional
 
 
 class ASTNode:
-    pass
+    line: int = 0
+    column: int = 0
 
 
 # ---------------------------------------------------------------------------

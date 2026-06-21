@@ -59,7 +59,7 @@
     "menus": {
       "editor/title": [
         {
-          "when": "resourceExtname == .jaon",
+          "when": "editorLangId == jaon",
           "command": "jaon.run",
           "group": "navigation@1"
         }

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -20,6 +21,37 @@ def run_file(path: str) -> None:
     analyze(program)
     compiler = compile_program(program)
     execute(compiler.module_code)
+
+
+def check_file(path: str) -> list[dict]:
+    """Statically check a Jaon source file and return a list of diagnostics."""
+    diagnostics: list[dict] = []
+    source = Path(path).read_text(encoding="utf-8")
+    try:
+        tokens = tokenize(source)
+        program = parse(tokens)
+        analyze(program)
+    except (LexerError, ParseError, JaonTypeError) as e:
+        message = str(e)
+        line = 1
+        column = 1
+        # Messages from lexer/parser/analyzer end with "at line X, column Y"
+        if "at line " in message:
+            try:
+                parts = message.rsplit("at line ", 1)
+                message = parts[0].rstrip()
+                loc_parts = parts[1].split(", column ")
+                line = int(loc_parts[0])
+                column = int(loc_parts[1])
+            except Exception:
+                pass
+        diagnostics.append({
+            "message": message,
+            "line": line,
+            "column": column,
+            "severity": "error",
+        })
+    return diagnostics
 
 
 class _NewlineTrackingStdout:
@@ -131,6 +163,9 @@ def main(argv: list = None) -> int:
     dis_parser = subparsers.add_parser("dis", help="Disassemble a Jaon source file")
     dis_parser.add_argument("file", help="Path to .jaon file")
 
+    check_parser = subparsers.add_parser("check", help="Statically check a Jaon source file")
+    check_parser.add_argument("file", help="Path to .jaon file")
+
     args = parser.parse_args(argv)
 
     if args.command == "run":
@@ -155,6 +190,11 @@ def main(argv: list = None) -> int:
             print(f"Error: {e}", file=sys.stderr)
             return 1
         return 0
+
+    if args.command == "check":
+        diagnostics = check_file(args.file)
+        print(json.dumps(diagnostics, ensure_ascii=False))
+        return 1 if diagnostics else 0
 
     return 0
 

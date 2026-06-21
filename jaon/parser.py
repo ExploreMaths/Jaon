@@ -45,6 +45,11 @@ class Parser:
     def is_at_end(self) -> bool:
         return self.peek().type == TokenType.EOF
 
+    def _node(self, node: ast.ASTNode, tok: Token) -> ast.ASTNode:
+        node.line = tok.line
+        node.column = tok.column
+        return node
+
     # ------------------------------------------------------------------
     # Program
     # ------------------------------------------------------------------
@@ -52,12 +57,13 @@ class Parser:
     def parse(self) -> ast.Program:
         imports: List[ast.ImportStmt] = []
         statements: List[ast.ASTNode] = []
+        first_tok = self.peek()
         while not self.is_at_end():
             if self.peek().type == TokenType.IMPORT:
                 imports.append(self.import_stmt())
             else:
                 statements.append(self.declaration())
-        return ast.Program(imports=imports, statements=statements)
+        return self._node(ast.Program(imports=imports, statements=statements), first_tok)
 
     # ------------------------------------------------------------------
     # Declarations
@@ -73,17 +79,19 @@ class Parser:
         return self.statement()
 
     def function_declaration(self) -> ast.FunctionDef:
-        self.advance()  # fun
+        tok = self.advance()  # fun
         name = self.expect(TokenType.IDENT, "Expected function name").value
         params = self.parameters()
         return_type: Optional[ast.TypeNode] = None
         if self.match(TokenType.COLON):
             return_type = self.type_annotation()
         body = self.block()
-        return ast.FunctionDef(name=name, params=params, return_type=return_type, body=body)
+        return self._node(
+            ast.FunctionDef(name=name, params=params, return_type=return_type, body=body), tok
+        )
 
     def class_declaration(self) -> ast.ClassDef:
-        self.advance()  # class
+        tok = self.advance()  # class
         name = self.expect(TokenType.IDENT, "Expected class name").value
         base: Optional[str] = None
         if self.match(TokenType.EXTENDS):
@@ -93,7 +101,7 @@ class Parser:
         while self.peek().type != TokenType.RBRACE and not self.is_at_end():
             members.append(self.class_member())
         self.expect(TokenType.RBRACE, "Expected '}' after class body")
-        return ast.ClassDef(name=name, base=base, members=members)
+        return self._node(ast.ClassDef(name=name, base=base, members=members), tok)
 
     def class_member(self) -> ast.ASTNode:
         access = "private"
@@ -118,37 +126,43 @@ class Parser:
             decl = self.var_declaration()
             if not isinstance(decl, ast.VarDecl):
                 self.error("Invalid field declaration")
-            return ast.FieldDecl(
+            field = ast.FieldDecl(
                 access=access,
                 name=decl.name,
                 field_type=decl.var_type or ast.TypeNode("Any"),
                 initializer=decl.initializer,
             )
+            field.line = decl.line
+            field.column = decl.column
+            return field
 
         if self.peek().type == TokenType.FUN:
-            self.advance()
+            tok = self.advance()
             name = self.expect(TokenType.IDENT, "Expected method name").value
             params = self.parameters()
             return_type: Optional[ast.TypeNode] = None
             if self.match(TokenType.COLON):
                 return_type = self.type_annotation()
             body = self.block()
-            return ast.MethodDef(
-                access=access,
-                name=name,
-                params=params,
-                return_type=return_type,
-                body=body,
-                is_static=is_static,
+            return self._node(
+                ast.MethodDef(
+                    access=access,
+                    name=name,
+                    params=params,
+                    return_type=return_type,
+                    body=body,
+                    is_static=is_static,
+                ),
+                tok,
             )
 
         self.error("Expected class member")
 
     def constructor_definition(self) -> ast.ConstructorDef:
-        self.advance()  # constructor
+        tok = self.advance()  # constructor
         params = self.parameters()
         body = self.block()
-        return ast.ConstructorDef(params=params, body=body)
+        return self._node(ast.ConstructorDef(params=params, body=body), tok)
 
     def parameters(self) -> List[ast.Parameter]:
         self.expect(TokenType.LPAREN, "Expected '('")
@@ -161,13 +175,15 @@ class Parser:
         return params
 
     def parameter(self) -> ast.Parameter:
+        tok = self.peek()
         name = self.expect(TokenType.IDENT, "Expected parameter name").value
         self.expect(TokenType.COLON, "Expected ':' after parameter name")
         param_type = self.type_annotation()
-        return ast.Parameter(name=name, param_type=param_type)
+        return self._node(ast.Parameter(name=name, param_type=param_type), tok)
 
     def var_declaration(self) -> ast.VarDecl:
-        is_const = self.peek().type == TokenType.VAL
+        tok = self.peek()
+        is_const = tok.type == TokenType.VAL
         self.advance()  # var / val
         name = self.expect(TokenType.IDENT, "Expected variable name").value
         var_type: Optional[ast.TypeNode] = None
@@ -176,9 +192,12 @@ class Parser:
         self.expect(TokenType.ASSIGN, "Expected '=' after variable name")
         initializer = self.expression()
         self.expect(TokenType.SEMICOLON, "Expected ';' after variable declaration")
-        return ast.VarDecl(name=name, var_type=var_type, initializer=initializer, is_const=is_const)
+        return self._node(
+            ast.VarDecl(name=name, var_type=var_type, initializer=initializer, is_const=is_const), tok
+        )
 
     def type_annotation(self) -> ast.TypeNode:
+        tok = self.peek()
         name = self.expect(TokenType.IDENT, "Expected type name").value
         params: List[ast.TypeNode] = []
         if self.match(TokenType.LT):
@@ -186,7 +205,7 @@ class Parser:
             while self.match(TokenType.COMMA):
                 params.append(self.type_annotation())
             self.expect(TokenType.GT, "Expected '>' after type parameters")
-        return ast.TypeNode(name=name, params=params)
+        return self._node(ast.TypeNode(name=name, params=params), tok)
 
     # ------------------------------------------------------------------
     # Statements
@@ -204,13 +223,13 @@ class Parser:
         if self.peek().type == TokenType.RETURN:
             return self.return_statement()
         if self.peek().type == TokenType.BREAK:
-            self.advance()
+            tok = self.advance()
             self.expect(TokenType.SEMICOLON, "Expected ';' after break")
-            return ast.BreakStmt()
+            return self._node(ast.BreakStmt(), tok)
         if self.peek().type == TokenType.CONTINUE:
-            self.advance()
+            tok = self.advance()
             self.expect(TokenType.SEMICOLON, "Expected ';' after continue")
-            return ast.ContinueStmt()
+            return self._node(ast.ContinueStmt(), tok)
         if self.peek().type == TokenType.TRY:
             return self.try_statement()
         if self.peek().type == TokenType.THROW:
@@ -218,23 +237,23 @@ class Parser:
         return self.expr_statement()
 
     def import_stmt(self) -> ast.ImportStmt:
-        self.advance()  # import
+        tok = self.advance()  # import
         path = [self.expect(TokenType.IDENT, "Expected import name").value]
         while self.match(TokenType.DOT):
             path.append(self.expect(TokenType.IDENT, "Expected import name").value)
         self.expect(TokenType.SEMICOLON, "Expected ';' after import")
-        return ast.ImportStmt(path=path)
+        return self._node(ast.ImportStmt(path=path), tok)
 
     def block(self) -> ast.Block:
-        self.expect(TokenType.LBRACE, "Expected '{'")
+        tok = self.expect(TokenType.LBRACE, "Expected '{'")
         statements: List[ast.ASTNode] = []
         while self.peek().type != TokenType.RBRACE and not self.is_at_end():
             statements.append(self.declaration())
         self.expect(TokenType.RBRACE, "Expected '}'")
-        return ast.Block(statements=statements)
+        return self._node(ast.Block(statements=statements), tok)
 
     def if_statement(self) -> ast.IfStmt:
-        self.advance()  # if
+        tok = self.advance()  # if
         condition = self.expression()
         then_block = self.block()
         elifs: List[tuple] = []
@@ -246,21 +265,24 @@ class Parser:
         else_block: Optional[ast.Block] = None
         if self.match(TokenType.ELSE):
             else_block = self.block()
-        return ast.IfStmt(
-            condition=condition,
-            then_block=then_block,
-            elifs=elifs,
-            else_block=else_block,
+        return self._node(
+            ast.IfStmt(
+                condition=condition,
+                then_block=then_block,
+                elifs=elifs,
+                else_block=else_block,
+            ),
+            tok,
         )
 
     def while_statement(self) -> ast.WhileStmt:
-        self.advance()  # while
+        tok = self.advance()  # while
         condition = self.expression()
         body = self.block()
-        return ast.WhileStmt(condition=condition, body=body)
+        return self._node(ast.WhileStmt(condition=condition, body=body), tok)
 
     def for_statement(self) -> ast.ForStmt:
-        self.advance()  # for
+        tok = self.advance()  # for
         self.expect(TokenType.LPAREN, "Expected '(' after 'for'")
         var_name: Optional[str] = None
         if self.peek().type == TokenType.IDENT:
@@ -269,18 +291,18 @@ class Parser:
         iterable = self.expression()
         self.expect(TokenType.RPAREN, "Expected ')' after for iterable")
         body = self.block()
-        return ast.ForStmt(var_name=var_name, iterable=iterable, body=body)
+        return self._node(ast.ForStmt(var_name=var_name, iterable=iterable, body=body), tok)
 
     def return_statement(self) -> ast.ReturnStmt:
-        self.advance()  # return
+        tok = self.advance()  # return
         value: Optional[ast.ASTNode] = None
         if self.peek().type != TokenType.SEMICOLON:
             value = self.expression()
         self.expect(TokenType.SEMICOLON, "Expected ';' after return")
-        return ast.ReturnStmt(value=value)
+        return self._node(ast.ReturnStmt(value=value), tok)
 
     def try_statement(self) -> ast.TryStmt:
-        self.advance()  # try
+        tok = self.advance()  # try
         try_block = self.block()
         self.expect(TokenType.CATCH, "Expected 'catch'")
         self.expect(TokenType.LPAREN, "Expected '(' after 'catch'")
@@ -290,23 +312,26 @@ class Parser:
         finally_block: Optional[ast.Block] = None
         if self.match(TokenType.FINALLY):
             finally_block = self.block()
-        return ast.TryStmt(
-            try_block=try_block,
-            catch_var=catch_var,
-            catch_block=catch_block,
-            finally_block=finally_block,
+        return self._node(
+            ast.TryStmt(
+                try_block=try_block,
+                catch_var=catch_var,
+                catch_block=catch_block,
+                finally_block=finally_block,
+            ),
+            tok,
         )
 
     def throw_statement(self) -> ast.ThrowStmt:
-        self.advance()  # throw
+        tok = self.advance()  # throw
         value = self.expression()
         self.expect(TokenType.SEMICOLON, "Expected ';' after throw")
-        return ast.ThrowStmt(value=value)
+        return self._node(ast.ThrowStmt(value=value), tok)
 
     def expr_statement(self) -> ast.ExprStmt:
         expr = self.expression()
         self.expect(TokenType.SEMICOLON, "Expected ';' after expression")
-        return ast.ExprStmt(expr=expr)
+        return self._node(ast.ExprStmt(expr=expr), expr)
 
     # ------------------------------------------------------------------
     # Expressions
@@ -320,147 +345,147 @@ class Parser:
         if self.match(TokenType.ASSIGN):
             value = self.assignment()
             if isinstance(expr, (ast.Identifier, ast.MemberExpr, ast.IndexExpr)):
-                return ast.Assignment(target=expr, value=value)
+                return self._node(ast.Assignment(target=expr, value=value), expr)
             self.error("Invalid assignment target")
         return expr
 
     def or_expr(self) -> ast.ASTNode:
         left = self.and_expr()
-        while self.match(TokenType.OR):
+        while True:
+            tok = self.match(TokenType.OR)
+            if not tok:
+                break
             right = self.and_expr()
-            left = ast.BinaryOp(op="or", left=left, right=right)
+            left = self._node(ast.BinaryOp(op="or", left=left, right=right), tok)
         return left
 
     def and_expr(self) -> ast.ASTNode:
         left = self.equality()
-        while self.match(TokenType.AND):
+        while True:
+            tok = self.match(TokenType.AND)
+            if not tok:
+                break
             right = self.equality()
-            left = ast.BinaryOp(op="and", left=left, right=right)
+            left = self._node(ast.BinaryOp(op="and", left=left, right=right), tok)
         return left
 
     def equality(self) -> ast.ASTNode:
         left = self.comparison()
         while True:
-            if self.match(TokenType.EQ):
-                right = self.comparison()
-                left = ast.BinaryOp(op="==", left=left, right=right)
-            elif self.match(TokenType.NEQ):
-                right = self.comparison()
-                left = ast.BinaryOp(op="!=", left=left, right=right)
-            else:
+            tok = self.match(TokenType.EQ) or self.match(TokenType.NEQ)
+            if not tok:
                 break
+            right = self.comparison()
+            op = "==" if tok.type == TokenType.EQ else "!="
+            left = self._node(ast.BinaryOp(op=op, left=left, right=right), tok)
         return left
 
     def comparison(self) -> ast.ASTNode:
         left = self.term()
         while True:
-            if self.match(TokenType.LT):
-                right = self.term()
-                left = ast.BinaryOp(op="<", left=left, right=right)
-            elif self.match(TokenType.GT):
-                right = self.term()
-                left = ast.BinaryOp(op=">", left=left, right=right)
-            elif self.match(TokenType.LE):
-                right = self.term()
-                left = ast.BinaryOp(op="<=", left=left, right=right)
-            elif self.match(TokenType.GE):
-                right = self.term()
-                left = ast.BinaryOp(op=">=", left=left, right=right)
-            else:
+            tok = self.match(TokenType.LT) or self.match(TokenType.GT) or self.match(TokenType.LE) or self.match(TokenType.GE)
+            if not tok:
                 break
+            right = self.term()
+            left = self._node(ast.BinaryOp(op=tok.value, left=left, right=right), tok)
         return left
 
     def term(self) -> ast.ASTNode:
         left = self.factor()
         while True:
-            if self.match(TokenType.PLUS):
-                right = self.factor()
-                left = ast.BinaryOp(op="+", left=left, right=right)
-            elif self.match(TokenType.MINUS):
-                right = self.factor()
-                left = ast.BinaryOp(op="-", left=left, right=right)
-            else:
+            tok = self.match(TokenType.PLUS) or self.match(TokenType.MINUS)
+            if not tok:
                 break
+            right = self.factor()
+            left = self._node(ast.BinaryOp(op=tok.value, left=left, right=right), tok)
         return left
 
     def factor(self) -> ast.ASTNode:
         left = self.unary()
         while True:
-            if self.match(TokenType.STAR):
-                right = self.unary()
-                left = ast.BinaryOp(op="*", left=left, right=right)
-            elif self.match(TokenType.SLASH):
-                right = self.unary()
-                left = ast.BinaryOp(op="/", left=left, right=right)
-            elif self.match(TokenType.PERCENT):
-                right = self.unary()
-                left = ast.BinaryOp(op="%", left=left, right=right)
-            else:
+            tok = self.match(TokenType.STAR) or self.match(TokenType.SLASH) or self.match(TokenType.PERCENT)
+            if not tok:
                 break
+            right = self.unary()
+            left = self._node(ast.BinaryOp(op=tok.value, left=left, right=right), tok)
         return left
 
     def unary(self) -> ast.ASTNode:
-        if self.match(TokenType.MINUS):
-            return ast.UnaryOp(op="-", operand=self.unary())
-        if self.match(TokenType.NOT):
-            return ast.UnaryOp(op="not", operand=self.unary())
+        tok = self.match(TokenType.MINUS) or self.match(TokenType.NOT)
+        if tok:
+            return self._node(ast.UnaryOp(op=tok.value, operand=self.unary()), tok)
         return self.postfix()
 
     def postfix(self) -> ast.ASTNode:
         expr = self.primary()
         while True:
-            if self.match(TokenType.LPAREN):
+            tok = self.match(TokenType.LPAREN)
+            if tok:
                 args: List[ast.ASTNode] = []
                 if self.peek().type != TokenType.RPAREN:
                     args.append(self.expression())
                     while self.match(TokenType.COMMA):
                         args.append(self.expression())
                 self.expect(TokenType.RPAREN, "Expected ')' after arguments")
-                expr = ast.CallExpr(callee=expr, args=args)
-            elif self.match(TokenType.DOT):
+                expr = self._node(ast.CallExpr(callee=expr, args=args), tok)
+                continue
+            tok = self.match(TokenType.DOT)
+            if tok:
                 member = self.expect(TokenType.IDENT, "Expected member name").value
-                expr = ast.MemberExpr(obj=expr, member=member)
-            elif self.match(TokenType.LBRACKET):
+                expr = self._node(ast.MemberExpr(obj=expr, member=member), expr)
+                continue
+            tok = self.match(TokenType.LBRACKET)
+            if tok:
                 index = self.expression()
                 self.expect(TokenType.RBRACKET, "Expected ']' after index")
-                expr = ast.IndexExpr(obj=expr, index=index)
-            else:
-                break
+                expr = self._node(ast.IndexExpr(obj=expr, index=index), tok)
+                continue
+            break
         return expr
 
     def primary(self) -> ast.ASTNode:
-        if self.match(TokenType.INT):
-            return ast.IntegerLiteral(value=self.previous().value)
-        if self.match(TokenType.FLOAT):
-            return ast.FloatLiteral(value=self.previous().value)
-        if self.match(TokenType.STRING):
-            return ast.StringLiteral(value=self.previous().value)
-        if self.match(TokenType.BOOL):
-            return ast.BooleanLiteral(value=self.previous().value)
-        if self.match(TokenType.NULL):
-            return ast.NullLiteral()
+        tok = self.match(TokenType.INT)
+        if tok:
+            return self._node(ast.IntegerLiteral(value=tok.value), tok)
+        tok = self.match(TokenType.FLOAT)
+        if tok:
+            return self._node(ast.FloatLiteral(value=tok.value), tok)
+        tok = self.match(TokenType.STRING)
+        if tok:
+            return self._node(ast.StringLiteral(value=tok.value), tok)
+        tok = self.match(TokenType.BOOL)
+        if tok:
+            return self._node(ast.BooleanLiteral(value=tok.value), tok)
+        tok = self.match(TokenType.NULL)
+        if tok:
+            return self._node(ast.NullLiteral(), tok)
 
-        if self.match(TokenType.IDENT):
-            return ast.Identifier(name=self.previous().value)
+        tok = self.match(TokenType.IDENT)
+        if tok:
+            return self._node(ast.Identifier(name=tok.value), tok)
 
-        if self.match(TokenType.THIS):
-            return ast.ThisExpr()
+        tok = self.match(TokenType.THIS)
+        if tok:
+            return self._node(ast.ThisExpr(), tok)
 
-        if self.match(TokenType.LPAREN):
+        tok = self.match(TokenType.LPAREN)
+        if tok:
             expr = self.expression()
             self.expect(TokenType.RPAREN, "Expected ')' after expression")
             return expr
 
-        if self.match(TokenType.LBRACKET):
+        tok = self.match(TokenType.LBRACKET)
+        if tok:
             elements: List[ast.ASTNode] = []
             if self.peek().type != TokenType.RBRACKET:
                 elements.append(self.expression())
                 while self.match(TokenType.COMMA):
                     elements.append(self.expression())
             self.expect(TokenType.RBRACKET, "Expected ']' after list elements")
-            return ast.ListLiteral(elements=elements)
+            return self._node(ast.ListLiteral(elements=elements), tok)
 
-        if self.match(TokenType.LBRACE):
+        tok = self.match(TokenType.LBRACE)
+        if tok:
             entries: List[tuple] = []
             if self.peek().type != TokenType.RBRACE:
                 key = self.expression()
@@ -473,17 +498,19 @@ class Parser:
                     value = self.expression()
                     entries.append((key, value))
             self.expect(TokenType.RBRACE, "Expected '}' after dict entries")
-            return ast.DictLiteral(entries=entries)
+            return self._node(ast.DictLiteral(entries=entries), tok)
 
-        if self.match(TokenType.FUN):
+        tok = self.match(TokenType.FUN)
+        if tok:
             params = self.parameters()
             return_type: Optional[ast.TypeNode] = None
             if self.match(TokenType.COLON):
                 return_type = self.type_annotation()
             body = self.block()
-            return ast.LambdaExpr(params=params, return_type=return_type, body=body)
+            return self._node(ast.LambdaExpr(params=params, return_type=return_type, body=body), tok)
 
-        if self.match(TokenType.NEW):
+        tok = self.match(TokenType.NEW)
+        if tok:
             class_name = self.expect(TokenType.IDENT, "Expected class name after 'new'").value
             self.expect(TokenType.LPAREN, "Expected '(' after class name")
             args: List[ast.ASTNode] = []
@@ -492,7 +519,7 @@ class Parser:
                 while self.match(TokenType.COMMA):
                     args.append(self.expression())
             self.expect(TokenType.RPAREN, "Expected ')' after arguments")
-            return ast.NewExpr(class_name=class_name, args=args)
+            return self._node(ast.NewExpr(class_name=class_name, args=args), tok)
 
         self.error(f"Unexpected token {self.peek().type.name}")
 
